@@ -58,19 +58,55 @@
     <p class="serial-card">**** 2468</p>
   </ion-card>
 
+  <div class="botones">
+    <ion-grid>
+      <ion-row class="menu-row">
+        <ion-col size="3" class="menu-col">
+          <ion-button class="menu-button">
+            <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img">
+          </ion-button>
+          <p class="icon-label">Gastos</p>
+        </ion-col>
+
+        <ion-col size="3" class="menu-col">
+          <ion-button class="menu-button">
+            <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img">
+          </ion-button>
+          <p class="icon-label">Ahorros</p>
+        </ion-col>
+
+        <ion-col size="3" class="menu-col">
+          <ion-button class="menu-button selected">
+            <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img">
+          </ion-button>
+          <p class="icon-label">Metas</p>
+        </ion-col>
+
+        <ion-col size="3" class="menu-col">
+          <ion-button class="menu-button">
+            <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img">
+          </ion-button>
+          <p class="icon-label">Más</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
     </ion-content>
   </ion-page>
 </template>
 
 <script>
-import { IonPage, IonHeader, IonToolbar, IonAvatar, IonLabel, IonButton, IonContent } from '@ionic/vue';
-import { IonGrid, IonRow, IonCol } from '@ionic/vue';
-import { IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/vue';
+import { 
+  IonPage, IonHeader, IonToolbar, IonAvatar, IonLabel, IonButton, IonContent, IonGrid, IonRow, 
+  IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent 
+} from '@ionic/vue';
+
 
 
 </script>
 
-<style scoped>
+<style>
 ion-toolbar {
   --background: #f4f4f4;
 }
@@ -187,5 +223,43 @@ ion-content {
   padding-left: 20px;
   margin-bottom: -10px;
   font-size: 18px;
+}
+
+.menu-row {
+  justify-content: center;
+  text-align: center;
+}
+
+.menu-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+ion-button.menu-button {
+  width: 70px;
+  height: 70px;
+  border-radius: 15px;
+  --background: linear-gradient(145deg, #5159ad, #0d47a1) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s ease;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.menu-button.selected {
+  background-color: #A5C9FF; /* Color azul claro cuando está seleccionado */
+}
+
+.icon-img {
+  width: 30px;
+  height: 30px;
+}
+
+.icon-label {
+  margin-top: 5px;
+  font-size: 14px;
+  color: black;
 }
 </style>

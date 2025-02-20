@@ -5,21 +5,20 @@
         <div class="container">
           <div class="user-info">
             <ion-avatar>
-            <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar">
-          </ion-avatar>
-          <ion-label>
-            <p>Welcome back</p>
-            <h2 class="name">John Doe</h2>
+              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar">
+            </ion-avatar>
+            <ion-label>
+              <p>Welcome back</p>
+              <h2 class="name">John Doe</h2>
             </ion-label>
             <div class="notification">
               <ion-button 
                 fill="outline"
                 color="primary" 
                 class="round-button"
-                shape="round"
-                >
+                shape="round">
                 <img src="@/assets/icons/icon-notification.png" alt="Icono Personalizado" style="width: 40px; height: 40px;">
-            </ion-button>
+              </ion-button>
             </div>
           </div>
         </div>
@@ -35,7 +34,7 @@
               <h2 class="balance">$125,000</h2>
             </ion-col>
             <ion-col size="4" class="text-align">
-              <p class="resumen">Resumen del<br>ultimo mes</p>
+              <p class="resumen">Resumen del<br>último mes</p>
               <p class="porcentaje">+5.57%</p>
             </ion-col>
           </ion-row>
@@ -51,62 +50,103 @@
         </ion-card-header> 
         <ion-card-content>
           <div class="card-content">
-          <p style="font-size: 15px;">Balance</p>
-          <h2 style="font-size: 25px;">$4,664.63</h2>
+            <p style="font-size: 15px;">Balance</p>
+            <h2 style="font-size: 25px;">$4,664.63</h2>
+          </div>
+        </ion-card-content>
+        <p class="serial-card">**** 2468</p>
+      </ion-card>
+
+      <div class="botones">
+        <ion-grid>
+          <ion-row class="menu-row">
+            <ion-col size="3" class="menu-col">
+              <ion-button class="menu-button">
+                <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img">
+              </ion-button>
+              <p class="icon-label">Gastos</p>
+            </ion-col>
+            <ion-col size="3" class="menu-col">
+              <ion-button class="menu-button">
+                <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img">
+              </ion-button>
+              <p class="icon-label">Ahorros</p>
+            </ion-col>
+            <ion-col size="3" class="menu-col">
+              <ion-button class="menu-button selected">
+                <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img">
+              </ion-button>
+              <p class="icon-label">Metas</p>
+            </ion-col>
+            <ion-col size="3" class="menu-col">
+              <ion-button class="menu-button">
+                <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img">
+              </ion-button>
+              <p class="icon-label">Más</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </div>
-    </ion-card-content>
-    <p class="serial-card">**** 2468</p>
-  </ion-card>
 
-  <div class="botones">
-    <ion-grid>
-      <ion-row class="menu-row">
-        <ion-col size="3" class="menu-col">
-          <ion-button class="menu-button">
-            <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img">
-          </ion-button>
-          <p class="icon-label">Gastos</p>
-        </ion-col>
+      <div class="ultimos-movimientos">
+        <ion-button @click="presentModal" expand="block">Ver Movimientos</ion-button>
 
-        <ion-col size="3" class="menu-col">
-          <ion-button class="menu-button">
-            <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img">
-          </ion-button>
-          <p class="icon-label">Ahorros</p>
-        </ion-col>
+        <ion-modal 
+          ref="modalRef" 
+          :is-open="isModalOpen" 
+          @will-dismiss="isModalOpen = false"
+          class="custom-modal">
+          <h2 class="modal-title">Últimos Movimientos</h2>
 
-        <ion-col size="3" class="menu-col">
-          <ion-button class="menu-button selected">
-            <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img">
-          </ion-button>
-          <p class="icon-label">Metas</p>
-        </ion-col>
+          <div class="transaction" v-for="(item, index) in transactions" :key="index">
+            <img :src="item.icon" class="icon" />
+            <div class="details">
+              <strong>{{ item.title }}</strong>
+              <p>{{ item.date }}</p>
+            </div>
+            <div class="amount" :class="{'negative': item.amount < 0, 'positive': item.amount > 0}">
+              {{ item.amount < 0 ? '-' : '+' }} ${{ Math.abs(item.amount).toFixed(2) }}
+            </div>
+          </div>
 
-        <ion-col size="3" class="menu-col">
-          <ion-button class="menu-button">
-            <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img">
-          </ion-button>
-          <p class="icon-label">Más</p>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
+          <ion-button expand="block" fill="clear" class="see-more">See more >></ion-button>
+        </ion-modal>
+      </div>
     </ion-content>
   </ion-page>
 </template>
 
-<script>
+<script setup lang="js">
 import { 
   IonPage, IonHeader, IonToolbar, IonAvatar, IonLabel, IonButton, IonContent, IonGrid, IonRow, 
   IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent 
 } from '@ionic/vue';
+import { ref } from 'vue';
+import iconBombilla from '@/assets/icons/icon-bombilla.png';
 
+const isModalOpen = ref(false);
 
+const transactions = ref([
+  {
+    title: 'Electricity Bill',
+    date: '20 October 2024, 3:15 pm',
+    amount: -250.00,
+    icon: iconBombilla
+  },
+  {
+    title: 'Freelance Payment',
+    date: '20 October 2024, 3:15 pm',
+    amount: 250.00,
+    icon: iconBombilla
+  }
+]);
 
+const presentModal = () => {
+  isModalOpen.value = true;
+};
 </script>
 
-<style>
+<style scoped>
 ion-toolbar {
   --background: #f4f4f4;
 }
@@ -121,7 +161,7 @@ ion-toolbar {
 .user-info {
   display: flex;
   align-items: center;
-  color: black
+  color: black;
 }
 
 .name {
@@ -133,7 +173,6 @@ ion-toolbar {
 ion-content {
   --background: #f4f4f4;
   --color: black;
-  
 }
 
 .round-button {
@@ -198,7 +237,7 @@ ion-content {
 
 .header-container {
   display: flex;
-  justify-content: space-between; /* Separa el título y el logo */
+  justify-content: space-between;
   align-items: center;
   position: relative;
 }
@@ -207,15 +246,14 @@ ion-content {
   font-size: 24px;
   font-weight: bold;
   color: #fdfdfd;
-  margin-top: 10px; /* Sube un poco el título */
+  margin-top: 10px;
 }
 
-/* Imagen del logo más arriba */
 .logo {
-  width: 80px; /* Ajusta el tamaño según necesites */
+  width: 80px;
   height: auto;
   position: absolute;
-  top: -30px; /* Sube un poco el logo */
+  top: -30px;
   right: 10px;
 }
 
@@ -249,7 +287,7 @@ ion-button.menu-button {
 }
 
 .menu-button.selected {
-  background-color: #A5C9FF; /* Color azul claro cuando está seleccionado */
+  background-color: #A5C9FF;
 }
 
 .icon-img {
@@ -261,5 +299,57 @@ ion-button.menu-button {
   margin-top: 5px;
   font-size: 14px;
   color: black;
+}
+
+.custom-modal {
+  --border-radius: 20px 20px 0 0;
+  --background: #ffffff;
+  --max-height: 60vh;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 20px;
+  color: #0A2A62;
+  margin: 20px 0;
+}
+
+.transaction {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  background-color: #f4f4f4;
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.details {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.amount {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.negative {
+  color: red;
+}
+
+.positive {
+  color: #0A2A62;
+}
+
+.see-more {
+  color: #0A2A62;
+  font-weight: bold;
 }
 </style>

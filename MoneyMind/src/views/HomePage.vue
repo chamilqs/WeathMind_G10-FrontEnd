@@ -5,19 +5,19 @@
         <div class="container">
           <div class="user-info">
             <ion-avatar>
-              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar">
+              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
             </ion-avatar>
-            <ion-label>
+            <div>
               <p>Welcome back</p>
               <h2 class="name">John Doe</h2>
-            </ion-label>
+            </div>
             <div class="notification">
               <ion-button 
                 fill="outline"
                 color="primary" 
                 class="round-button"
                 shape="round">
-                <img src="@/assets/icons/icon-notification.png" alt="Icono Personalizado" style="width: 40px; height: 40px;">
+                <img src="@/assets/icons/icon-notification.png" alt="Icono Personalizado" style="width: 40px; height: 40px;" />
               </ion-button>
             </div>
           </div>
@@ -30,11 +30,11 @@
         <ion-grid>
           <ion-row>
             <ion-col size="8">
-              <p class="label">Balance</p>
+              <p class="label">Your Balance</p>
               <h2 class="balance">$125,000</h2>
             </ion-col>
             <ion-col size="4" class="text-align">
-              <p class="resumen">Resumen del<br>último mes</p>
+              <p class="resumen">Last month summary</p>
               <p class="porcentaje">+5.57%</p>
             </ion-col>
           </ion-row>
@@ -45,7 +45,7 @@
         <ion-card-header class="card-header">
           <div class="header-container">
             <h2 class="card-title">X-Card</h2>
-            <img src="@/assets/icons/icon-mastercard.png" alt="MasterCard" class="logo">
+            <img src="@/assets/icons/icon-mastercard.png" alt="MasterCard" class="logo" />
           </div>
         </ion-card-header> 
         <ion-card-content>
@@ -62,25 +62,25 @@
           <ion-row class="menu-row">
             <ion-col size="3" class="menu-col">
               <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img">
+                <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img" />
               </ion-button>
               <p class="icon-label">Gastos</p>
             </ion-col>
             <ion-col size="3" class="menu-col">
               <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img">
+                <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img" />
               </ion-button>
               <p class="icon-label">Ahorros</p>
             </ion-col>
             <ion-col size="3" class="menu-col">
               <ion-button class="menu-button selected">
-                <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img">
+                <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img" />
               </ion-button>
               <p class="icon-label">Metas</p>
             </ion-col>
             <ion-col size="3" class="menu-col">
               <ion-button class="menu-button">
-                <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img">
+                <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img" />
               </ion-button>
               <p class="icon-label">Más</p>
             </ion-col>
@@ -89,32 +89,25 @@
       </div>
 
       <div class="ultimos-movimientos">
-        <ion-button @click="presentModal" expand="block">Ver Movimientos</ion-button>
+        <h2 class="modal-title">Últimos Movimientos</h2>
 
-        <ion-modal 
-          ref="modalRef" 
-          :is-open="isModalOpen" 
-          @will-dismiss="isModalOpen = false"
-          class="custom-modal">
-          <h2 class="modal-title">Últimos Movimientos</h2>
-
-          <div class="transaction" v-for="(item, index) in transactions" :key="index">
-            <img :src="item.icon" class="icon" />
-            <div class="details">
-              <strong>{{ item.title }}</strong>
-              <p>{{ item.date }}</p>
-            </div>
-            <div class="amount" :class="{'negative': item.amount < 0, 'positive': item.amount > 0}">
-              {{ item.amount < 0 ? '-' : '+' }} ${{ Math.abs(item.amount).toFixed(2) }}
-            </div>
+        <div class="transaction" v-for="(item, index) in transactions" :key="index">
+          <img :src="item.icon" class="icon" />
+          <div class="details">
+            <strong>{{ item.title }}</strong>
+            <p>{{ item.date }}</p>
           </div>
+          <div class="amount" :class="{'negative': item.amount < 0, 'positive': item.amount > 0}">
+            {{ item.amount < 0 ? '-' : '+' }} ${{ Math.abs(item.amount).toFixed(2) }}
+          </div>
+        </div>
 
-          <ion-button expand="block" fill="clear" class="see-more">See more >></ion-button>
-        </ion-modal>
+        <ion-button expand="block" fill="clear" class="see-more">See more >></ion-button>
       </div>
     </ion-content>
   </ion-page>
 </template>
+
 
 <script setup lang="js">
 import { 
@@ -140,14 +133,15 @@ const transactions = ref([
     icon: iconBombilla
   }
 ]);
-
-const presentModal = () => {
-  isModalOpen.value = true;
-};
 </script>
 
-<style scoped>
+<style>
 ion-toolbar {
+  --background: #f4f4f4;
+  --border-color: transparent;
+}
+
+ion-content {
   --background: #f4f4f4;
 }
 
@@ -155,7 +149,10 @@ ion-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
+  padding-bottom: 0px;
 }
 
 .user-info {
@@ -168,11 +165,6 @@ ion-toolbar {
   margin-left: 10px;
   font-size: 20px;
   font-weight: bold;
-}
-
-ion-content {
-  --background: #f4f4f4;
-  --color: black;
 }
 
 .round-button {
@@ -192,8 +184,13 @@ ion-content {
 }
 
 .container-contenido {
-  padding: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 0px;
+  padding-bottom: 16px;
   display: flex;
+  background-color: #f4f4f4;
+  
 }
 
 .label {
@@ -221,10 +218,6 @@ ion-content {
   color: #5C9EFF;
   text-align: right;
   margin: 5px 0 0;
-}
-
-.text-right {
-  text-align: right;
 }
 
 .card {
@@ -301,10 +294,12 @@ ion-button.menu-button {
   color: black;
 }
 
-.custom-modal {
-  --border-radius: 20px 20px 0 0;
-  --background: #ffffff;
-  --max-height: 60vh;
+.ultimos-movimientos {
+  margin-top: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-title {
@@ -333,6 +328,7 @@ ion-button.menu-button {
 .details {
   flex: 1;
   margin-left: 10px;
+  color: black;
 }
 
 .amount {

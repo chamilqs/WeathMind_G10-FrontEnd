@@ -43,4 +43,12 @@
 
 <style scoped>
 
+ion-tab-button {
+  --color-selected: black;
+}
+
+ion-tab-bar {
+  --background: #f4f5f8;
+}
+
 </style>

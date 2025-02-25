@@ -36,6 +36,9 @@
             <div class="estadistica">
                 <PieChart />
             </div>
+            <div class="consumo-mes">
+                <ConsumeDelMes />
+            </div>
         </ion-content>
     </ion-page>
 </template>
@@ -45,7 +48,7 @@ import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
 import { IonDatetime, IonDatetimeButton, IonModal } from '@ionic/vue';
 import { IonGrid, IonRow, IonCol } from '@ionic/vue';
 import PieChart from '@/components/PieChart.vue'; // IMPORTANTE: Importa el componente aquí
-import ConsumeDelMes from '../components/ConsumeDelMes.vue';
+import ConsumeDelMes from '../components/ConsumoDelMes.vue';
 
 </script>
 

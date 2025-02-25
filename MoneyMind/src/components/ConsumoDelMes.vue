@@ -20,7 +20,6 @@
 <script setup>
 import { IonProgressBar } from '@ionic/vue';
 import { bulbOutline } from 'ionicons/icons';
-import { ref } from 'vue';
 
 const expensesData = [
     {
@@ -51,6 +50,7 @@ const expenses = expensesData; // Asignación correcta después de declarar expe
 
 <style scoped>
 .consumo-mes {
+    color: #1e3a8a;
     background: rgb(252, 251, 251);
     border-radius: 10px;
     padding: 20px;

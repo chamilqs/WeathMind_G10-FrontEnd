@@ -1,13 +1,11 @@
 <template>
   <ion-app>
-    
-    <TransactionList />
+    <ion-router-outlet />
   </ion-app>
 </template>
 
 <script setup>
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
-import TransactionList from './components/TransactionList.vue';
 </script>
 
 <style>

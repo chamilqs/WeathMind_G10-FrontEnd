@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import Tabs from '../views/Tabs.vue'
+import Tabs from '../components/Tabs.vue'
 import HomePage from '../views/HomePage.vue'
 import Statistic from '../views/Statistic.vue'
 import MyCards from '../views/MyCards.vue'

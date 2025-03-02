@@ -1,6 +1,4 @@
 <template>
-	<ion-page>
-    <ion-content>
       <ion-list>
         <ion-item>
           <ion-label position="stacked">Tipo</ion-label>
@@ -36,16 +34,20 @@
       </ion-list>
       
       <ion-button expand="full" color="primary">Guardar</ion-button>
-    </ion-content>
-  </ion-page>
 </template>
 
 <script setup>
-import { IonContent, IonPage, IonList, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton } from '@ionic/vue';
+import {  IonList, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton } from '@ionic/vue';
 
 </script>
 
 <style>
+ion-item {
+  --background: white;
+  --color: black;
+}
+
+
 ion-button {
   margin-top: 20px;
   --background: #0a2f73;

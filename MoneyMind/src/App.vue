@@ -1,11 +1,12 @@
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <RegistroFinanzas />
   </ion-app>
 </template>
 
 <script setup>
-import { IonApp, IonRouterOutlet } from '@ionic/vue';
+import { IonApp } from '@ionic/vue';
+import RegistroFinanzas from './components/RegistroFinanzas.vue';
 </script>
 
 <style>

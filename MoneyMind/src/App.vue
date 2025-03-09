@@ -1,11 +1,13 @@
 <template>
   <ion-app>
     <ion-router-outlet />
+    <SideNav />
   </ion-app>
 </template>
 
 <script setup>
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
+import SideNav from './components/SideNav.vue';
 </script>
 
 <style>

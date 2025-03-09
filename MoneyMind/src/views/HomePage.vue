@@ -1,11 +1,12 @@
 <template>
-  <ion-page>
+  <ion-page id="main-content">
+    <SideNav />
     <ion-header>
       <ion-toolbar>
         <div class="container">
           <div class="user-info">
             <ion-avatar>
-              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
+              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" @click="openMenu" alt="avatar" />
             </ion-avatar>
             <div>
               <p>Welcome back</p>
@@ -25,7 +26,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content @click="handleClickOutside">
       <div class="container-contenido">
         <ion-grid>
           <ion-row>
@@ -116,6 +117,31 @@ import {
 } from '@ionic/vue';
 import { ref } from 'vue';
 import iconBombilla from '@/assets/icons/icon-bombilla.png';
+import SideNav from '../components/SideNav.vue';
+import { menuController } from '@ionic/vue';
+import { onMounted, onUnmounted } from 'vue';
+
+const openMenu = async () => {
+  await menuController.open(); // Asegura que el menú se abra
+};
+
+const handleClickOutside = async (event) => {
+  const menu = await menuController.get('main-menu'); // Usa el ID correcto del menú
+  if (menu && menu.isOpen()) {
+    const isClickInsideMenu = event.target.closest('ion-menu');
+    if (!isClickInsideMenu) {
+      await menuController.close('main-menu'); // Cierra el menú usando el ID correcto
+    }
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 const isModalOpen = ref(false);
 
@@ -133,6 +159,7 @@ const transactions = ref([
     icon: iconBombilla
   }
 ]);
+
 </script>
 
 <style>

@@ -1,20 +1,27 @@
 <template>
-	<ion-page>
-		<ion-header>
-			<ion-toolbar>
-				<ion-title class="title">Mi Perfil</ion-title>
-			</ion-toolbar>
-		</ion-header>
+  <ion-page>
+    <ion-header>
+      <ion-toolbar>
+        <!-- Botón para volver a Home -->
+        <ion-buttons slot="start">
+					<ion-button @click="goToHome">
+						<ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+					</ion-button>
+				</ion-buttons>
+        
+        <ion-title class="title">Mi Perfil</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-		<ion-content>
-			<div class="foto-perfil">
-					<ion-avatar>
-          	<img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
-        	</ion-avatar>
-			</div>
+    <ion-content>
+      <div class="foto-perfil">
+        <ion-avatar>
+          <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
+        </ion-avatar>
+      </div>
 
-			<div class="info-perfil">
-				<ion-list lines="full">
+      <div class="info-perfil">
+        <ion-list lines="full">
           <ion-item>
             <ion-label>
               <p class="label">Full Name</p>
@@ -43,16 +50,21 @@
             </ion-label>
           </ion-item>
         </ion-list>
-			</div>
-
-		</ion-content>
-	</ion-page>
-
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonAvatar, IonList, IonItem, IonLabel } from '@ionic/vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goToHome = () => {
+  router.push('/tabs/homepage');
+};
 
 
 
@@ -82,6 +94,7 @@ const user = ref({
 	.title {
 		color: black;
 		align-items: center;
+		text-align: center;
 		font-size: 18px;
 	}
 

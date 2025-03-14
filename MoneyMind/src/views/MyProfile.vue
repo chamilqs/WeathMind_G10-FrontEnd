@@ -4,10 +4,10 @@
       <ion-toolbar>
         <!-- Botón para volver a Home -->
         <ion-buttons slot="start">
-					<ion-button @click="goToHome">
-						<ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-					</ion-button>
-				</ion-buttons>
+          <ion-button @click="goToHome">
+            <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
         
         <ion-title class="title">Mi Perfil</ion-title>
       </ion-toolbar>
@@ -16,7 +16,7 @@
     <ion-content>
       <div class="foto-perfil">
         <ion-avatar>
-          <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
+          <img :src="user.avatarUrl" alt="avatar" />
         </ion-avatar>
       </div>
 
@@ -26,6 +26,13 @@
             <ion-label>
               <p class="label">Full Name</p>
               <h3>{{ user.fullName }}</h3>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <p class="label">Username</p>
+              <h3>{{ user.username }}</h3>
             </ion-label>
           </ion-item>
 
@@ -56,31 +63,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonAvatar, IonList, IonItem, IonLabel } from '@ionic/vue';
-import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import User from "@/models/User";
 
 const router = useRouter();
 
 const goToHome = () => {
-  router.push('/tabs/homepage');
+  router.push("/tabs/homepage");
 };
 
-
-
-const user = ref({
-  fullName: "Tiana Saris",
-  email: "Brooklynsimmons@gmail.com",
-  phone: "+1 3712 3789",
-  address: "711 Leavenworth Apt. # 47 San Francisco, CA 94109",
-  avatar: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
-});
-
+// Cargar datos desde el modelo User.js
+const user = ref(User.mockData());
 </script>
+
 
 <style scoped>
 	ion-header {
 		padding-top: 20px;
+    background-color: white;
 	}
 
 	ion-toolbar {

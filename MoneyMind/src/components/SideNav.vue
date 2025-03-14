@@ -30,7 +30,7 @@
           <ion-icon slot="start" :icon="personOutline"></ion-icon>
           <ion-label>Your Profile</ion-label>
         </ion-item>
-        <ion-item button @click="goTo('/history-transaction')">
+        <ion-item button @click="goTo('/HistoryTransaction')">
           <ion-icon slot="start" :icon="timeOutline"></ion-icon>
           <ion-label>History Transaction</ion-label>
         </ion-item>
@@ -96,6 +96,7 @@ const logout = async () => {
   router.push('/login');
 };
 </script>
+
 
 <style scoped>
 .profile-header {

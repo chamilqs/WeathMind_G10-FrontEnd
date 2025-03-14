@@ -1,19 +1,20 @@
 export default class Transaction {
-  constructor(id, cardId, type, amount, date, description, category) {
-    this.id = id; // Identificador único de la transacción
-    this.cardId = cardId; // Relación con una tarjeta
+  constructor(id, cardId, description, amount, type, category, date) {
+    this.id = id;
+    this.cardId = cardId; // Relación con la tarjeta
+    this.description = description;
+    this.amount = amount;
     this.type = type; // "Ingreso" o "Gasto"
-    this.amount = amount; // Monto de la transacción
-    this.date = date; // Fecha en que se realizó
-    this.description = description; // Ej: "Compra en Amazon"
-    this.category = category; // Ej: "Compras", "Salario", etc.
+    this.category = category;
+    this.date = date;
   }
 
   static mockData() {
     return [
-      new Transaction("t1", "c1", "Gasto", 120.5, "2025-03-10", "Cena en un restaurante", "Restaurantes"),
-      new Transaction("t2", "c1", "Ingreso", 2000, "2025-03-05", "Pago de salario", "Salario"),
-      new Transaction("t3", "c2", "Gasto", 75.3, "2025-03-08", "Amazon purchase", "Compras"),
+      new Transaction("t1", "c1", "Dinner at Restaurant", 45.99, "Gasto", "Food", "2025-03-10"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t3", "c2", "New Shoes", 90.00, "Gasto", "Shopping", "2025-03-12"),
+      new Transaction("t4", "c2", "Uber Ride", 12.50, "Gasto", "Transport", "2025-03-09"),
     ];
   }
 }

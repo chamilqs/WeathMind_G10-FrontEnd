@@ -79,4 +79,22 @@ onMounted(() => {
 p {
   color: black;
 }
+
+ion-card {
+  background-color: #f5f5f5;
+}
+
+.transaction-title {
+  color: black;
+}
+
+.income {
+  color: green; /* Color verde para ingresos */
+  font-weight: bold;
+}
+
+.expense {
+  color: red; /* Color rojo para gastos */
+  font-weight: bold;
+}
 </style>

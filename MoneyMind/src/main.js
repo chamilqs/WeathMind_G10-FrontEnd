@@ -1,6 +1,24 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
+import { addIcons } from 'ionicons';
+import { 
+  personOutline, idCardOutline, timeOutline, 
+  fingerPrintOutline, keyOutline, lockOpenOutline,
+  notificationsOutline, languageOutline, helpCircleOutline, logOutOutline 
+} from 'ionicons/icons';
+addIcons({
+  'person-outline': personOutline,
+  'id-card-outline': idCardOutline,
+  'time-outline': timeOutline,
+  'finger-print-outline': fingerPrintOutline,
+  'key-outline': keyOutline,
+  'lock-open-outline': lockOpenOutline,
+  'notifications-outline': notificationsOutline,
+  'language-outline': languageOutline,
+  'help-circle-outline': helpCircleOutline,
+  'log-out-outline': logOutOutline,
+});
 
 import { IonicVue } from '@ionic/vue';
 

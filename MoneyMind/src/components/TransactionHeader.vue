@@ -15,6 +15,7 @@
 import { IonButton, IonIcon } from '@ionic/vue';
 </script>
 
+
 <style scoped>
 .transaction-header {
     text-align: center;
@@ -25,7 +26,7 @@ import { IonButton, IonIcon } from '@ionic/vue';
     border-bottom-right-radius: 20px;
     position: relative;
 }
-
+/**/
 .back-button {
     position: absolute;
     left: 10px;

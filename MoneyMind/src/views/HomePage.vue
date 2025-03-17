@@ -1,11 +1,12 @@
 <template>
-  <ion-page>
+  <ion-page id="main-content">
+    <SideNav />
     <ion-header>
       <ion-toolbar>
         <div class="container">
           <div class="user-info">
             <ion-avatar>
-              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" alt="avatar" />
+              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" @click="openMenu" alt="avatar" />
             </ion-avatar>
             <div>
               <p>Welcome back</p>
@@ -25,7 +26,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content>
+    <ion-content @click="handleClickOutside">
       <div class="container-contenido">
         <ion-grid>
           <ion-row>
@@ -144,6 +145,7 @@ const transactions = ref([
     icon: iconBombilla
   }
 ]);
+
 </script>
 
 <style>

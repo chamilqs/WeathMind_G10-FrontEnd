@@ -41,21 +41,7 @@
         </ion-grid>
       </div>
 
-      <ion-card class="card">
-        <ion-card-header class="card-header">
-          <div class="header-container">
-            <h2 class="card-title">X-Card</h2>
-            <img src="@/assets/icons/icon-mastercard.png" alt="MasterCard" class="logo" />
-          </div>
-        </ion-card-header> 
-        <ion-card-content>
-          <div class="card-content">
-            <p style="font-size: 15px;">Balance</p>
-            <h2 style="font-size: 25px;">$4,664.63</h2>
-          </div>
-        </ion-card-content>
-        <p class="serial-card">**** 2468</p>
-      </ion-card>
+      <Cards />
 
       <div class="botones">
         <ion-grid>
@@ -112,10 +98,35 @@
 <script setup lang="js">
 import { 
   IonPage, IonHeader, IonToolbar, IonAvatar, IonLabel, IonButton, IonContent, IonGrid, IonRow, 
-  IonCol, IonCard, IonCardHeader, IonCardTitle, IonCardContent 
-} from '@ionic/vue';
+  IonCol, } from '@ionic/vue';
 import { ref } from 'vue';
 import iconBombilla from '@/assets/icons/icon-bombilla.png';
+import SideNav from '../components/SideNav.vue';
+import { menuController } from '@ionic/vue';
+import { onMounted, onUnmounted } from 'vue';
+import Cards from '../components/Cards.vue';
+
+const openMenu = async () => {
+  await menuController.open(); // Asegura que el menú se abra
+};
+
+const handleClickOutside = async (event) => {
+  const menu = await menuController.get('main-menu'); // Usa el ID correcto del menú
+  if (menu && menu.isOpen()) {
+    const isClickInsideMenu = event.target.closest('ion-menu');
+    if (!isClickInsideMenu) {
+      await menuController.close('main-menu'); // Cierra el menú usando el ID correcto
+    }
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 
 const isModalOpen = ref(false);
 
@@ -220,40 +231,12 @@ ion-content {
   margin: 5px 0 0;
 }
 
-.card {
-  background: linear-gradient(145deg, #1a237e, #0d47a1);
-  border-radius: 16px;
-  padding: 24px;
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-}
-
-.card-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #fdfdfd;
-  margin-top: 10px;
-}
-
 .logo {
   width: 80px;
   height: auto;
   position: absolute;
   top: -30px;
   right: 10px;
-}
-
-.serial-card {
-  padding-left: 20px;
-  margin-bottom: -10px;
-  font-size: 18px;
 }
 
 .menu-row {

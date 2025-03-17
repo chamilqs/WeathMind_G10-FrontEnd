@@ -5,6 +5,9 @@ import Statistic from '../views/Statistic.vue'
 import MyCards from '../views/MyCards.vue'
 import Mandy from '../views/Mandy.vue'
 import RegistroFinanzas from '../views/RegistroFinanzas.vue'
+import MyProfile from '../views/MyProfile.vue';
+import SideNav from '../components/SideNav.vue';
+import HistoryTransaction from '../views/HistoryTransaction.vue';
 
 const routes = [
   {
@@ -25,7 +28,16 @@ const routes = [
   {
     path: '/registro-finanzas',
     component: RegistroFinanzas
-  }
+  },
+  { path: '/myprofile', 
+    component: MyProfile 
+  },
+  { path: '/sidenav',
+    component: SideNav
+  },
+  { path: '/historytransaction',
+    component: HistoryTransaction
+  },
 ]
 
 

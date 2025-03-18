@@ -44,37 +44,6 @@
 
       <Cards />
 
-      <div class="botones">
-        <ion-grid>
-          <ion-row class="menu-row">
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Gastos" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Gastos</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/pestana-web.png" alt="Ahorros" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Ahorros</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button selected">
-                <img src="/src/assets/icons/pestana-web.png" alt="Metas" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Metas</p>
-            </ion-col>
-            <ion-col size="3" class="menu-col">
-              <ion-button class="menu-button">
-                <img src="/src/assets/icons/ajustamiento.png" alt="Más" class="icon-img" />
-              </ion-button>
-              <p class="icon-label">Más</p>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-
       <div class="ultimos-movimientos">
         <h2 class="modal-title">Últimos Movimientos</h2>
 

@@ -15,6 +15,16 @@ export default class Transaction {
       new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
       new Transaction("t3", "c2", "New Shoes", 90.00, "Gasto", "Shopping", "2025-03-12"),
       new Transaction("t4", "c2", "Uber Ride", 12.50, "Gasto", "Transport", "2025-03-09"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      new Transaction("t2", "c1", "Salary", 2500, "Ingreso", "Salary", "2025-03-05"),
+      
     ];
   }
 }

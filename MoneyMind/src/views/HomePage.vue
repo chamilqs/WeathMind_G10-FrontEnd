@@ -44,37 +44,30 @@
 
       <Cards />
 
-      <div class="ultimos-movimientos">
-        <h2 class="modal-title">Últimos Movimientos</h2>
+        <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
 
-        <div class="transaction" v-for="(item, index) in transactions" :key="index">
-          <img :src="item.icon" class="icon" />
-          <div class="details">
-            <strong>{{ item.title }}</strong>
-            <p>{{ item.date }}</p>
-          </div>
-          <div class="amount" :class="{'negative': item.amount < 0, 'positive': item.amount > 0}">
-            {{ item.amount < 0 ? '-' : '+' }} ${{ Math.abs(item.amount).toFixed(2) }}
-          </div>
-        </div>
-
-        <ion-button expand="block" fill="clear" class="see-more">See more >></ion-button>
-      </div>
+      <!-- Modal que actuará como Bottom Sheet -->
+      <ion-modal
+        :is-open="isOpen"
+        @didDismiss="isOpen = false"
+        :css-class="['bottom-sheet-modal']"
+      >
+        <UltimosMovimientos />
+      </ion-modal>
     </ion-content>
   </ion-page>
 </template>
 
-
 <script setup lang="js">
 import { 
-  IonPage, IonHeader, IonToolbar, IonAvatar, IonLabel, IonButton, IonContent, IonGrid, IonRow, 
+  IonPage, IonHeader, IonToolbar, IonAvatar, IonModal, IonButton, IonContent, IonGrid, IonRow, 
   IonCol, } from '@ionic/vue';
 import { ref } from 'vue';
-import iconBombilla from '@/assets/icons/icon-bombilla.png';
 import SideNav from '../components/SideNav.vue';
 import { menuController } from '@ionic/vue';
 import { onMounted, onUnmounted } from 'vue';
 import Cards from '../components/Cards.vue';
+import UltimosMovimientos from '../components/UltimosMovimientos.vue';
 
 const openMenu = async () => {
   await menuController.open(); // Asegura que el menú se abra
@@ -98,23 +91,12 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-const isModalOpen = ref(false);
+const isOpen = ref(false); // Cambia isModalOpen por isOpen
 
-const transactions = ref([
-  {
-    title: 'Electricity Bill',
-    date: '20 October 2024, 3:15 pm',
-    amount: -250.00,
-    icon: iconBombilla
-  },
-  {
-    title: 'Freelance Payment',
-    date: '20 October 2024, 3:15 pm',
-    amount: 250.00,
-    icon: iconBombilla
-  }
-]);
-
+const openBottomSheet = () => {
+  isOpen.value = true;
+  console.log("Modal abierto:", isOpen.value); // Depuración
+};
 </script>
 
 <style>
@@ -248,58 +230,22 @@ ion-button.menu-button {
   color: black;
 }
 
-.ultimos-movimientos {
-  margin-top: 20px;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.bottom-sheet-modal {
+  --height: 50%;
+  align-items: flex-end;
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 0 0;
 }
 
-.modal-title {
-  text-align: center;
-  font-size: 20px;
-  color: #0A2A62;
-  margin: 20px 0;
-}
-
-.transaction {
+.custom-button {
+  --background: linear-gradient(145deg, #1a237e, #0d47a1);
+  --color: #FFFFFF; /* Color del texto */
+  --border-radius: 10px; /* Bordes redondeados */
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid #f4f4f4;
-}
-
-.icon {
-  width: 40px;
-  height: 40px;
-  background-color: #f4f4f4;
-  border-radius: 50%;
-  padding: 5px;
-}
-
-.details {
-  flex: 1;
-  margin-left: 10px;
-  color: black;
-}
-
-.amount {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.negative {
-  color: red;
-}
-
-.positive {
-  color: #0A2A62;
-}
-
-.see-more {
-  color: #0A2A62;
-  font-weight: bold;
+  justify-content: center;
+  margin-left: 21.500px;
+  margin-right: 21.500px;
 }
 </style>

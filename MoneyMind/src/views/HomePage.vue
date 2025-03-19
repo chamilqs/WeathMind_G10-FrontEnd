@@ -27,33 +27,7 @@
     </ion-header>
 
     <ion-content @click="handleClickOutside">
-      <div class="container-contenido">
-        <ion-grid>
-          <ion-row>
-            <ion-col size="8">
-              <p class="label">Your Balance</p>
-              <h2 class="balance">$125,000</h2>
-            </ion-col>
-            <ion-col size="4" class="text-align">
-              <p class="resumen">Last month summary</p>
-              <p class="porcentaje">+5.57%</p>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-
-      <Cards />
-
-        <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
-
-      <!-- Modal que actuará como Bottom Sheet -->
-      <ion-modal
-        :is-open="isOpen"
-        @didDismiss="isOpen = false"
-        :css-class="['bottom-sheet-modal']"
-      >
-        <UltimosMovimientos />
-      </ion-modal>
+    
     </ion-content>
   </ion-page>
 </template>
@@ -147,42 +121,6 @@ ion-content {
   left: 70%;
 }
 
-.container-contenido {
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 0px;
-  padding-bottom: 16px;
-  display: flex;
-  background-color: #f4f4f4;
-  
-}
-
-.label {
-  font-size: 14px;
-  color: #0A2A62;
-  margin: 0;
-}
-
-.balance {
-  font-size: 24px;
-  font-weight: bold;
-  color: #0A2A62;
-  margin: 5px 0 0;
-}
-
-.resumen {
-  font-size: 12px;
-  color: gray;
-  text-align: right;
-  margin: 0;
-}
-
-.porcentaje {
-  font-size: 14px;
-  color: #5C9EFF;
-  text-align: right;
-  margin: 5px 0 0;
-}
 
 .logo {
   width: 80px;
@@ -192,60 +130,4 @@ ion-content {
   right: 10px;
 }
 
-.menu-row {
-  justify-content: center;
-  text-align: center;
-}
-
-.menu-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-ion-button.menu-button {
-  width: 70px;
-  height: 70px;
-  border-radius: 15px;
-  --background: linear-gradient(145deg, #5159ad, #0d47a1) !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.3s ease;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.1);
-}
-
-.menu-button.selected {
-  background-color: #A5C9FF;
-}
-
-.icon-img {
-  width: 30px;
-  height: 30px;
-}
-
-.icon-label {
-  margin-top: 5px;
-  font-size: 14px;
-  color: black;
-}
-
-.bottom-sheet-modal {
-  --height: 50%;
-  align-items: flex-end;
-  backdrop-filter: blur(5px); /* Efecto de desenfoque */
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 0 0 0 0;
-}
-
-.custom-button {
-  --background: linear-gradient(145deg, #1a237e, #0d47a1);
-  --color: #FFFFFF; /* Color del texto */
-  --border-radius: 10px; /* Bordes redondeados */
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
-  display: flex;
-  justify-content: center;
-  margin-left: 21.500px;
-  margin-right: 21.500px;
-}
 </style>

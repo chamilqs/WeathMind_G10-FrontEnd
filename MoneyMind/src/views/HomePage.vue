@@ -27,6 +27,20 @@
     </ion-header>
 
     <ion-content @click="handleClickOutside">
+      <Cards />
+
+      <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
+
+      <!-- Modal que actuará como Bottom Sheet -->
+      <ion-modal
+        :is-open="isOpen"
+        @didDismiss="isOpen = false"
+        :css-class="['bottom-sheet-modal']"
+      >
+        <UltimosMovimientos />
+      </ion-modal>
+
+      <ButtonSheetOpciones />
     
     </ion-content>
   </ion-page>
@@ -42,6 +56,7 @@ import { menuController } from '@ionic/vue';
 import { onMounted, onUnmounted } from 'vue';
 import Cards from '../components/Cards.vue';
 import UltimosMovimientos from '../components/UltimosMovimientos.vue';
+import ButtonSheetOpciones from '../components/ButtonSheetOpciones.vue';
 
 const openMenu = async () => {
   await menuController.open(); // Asegura que el menú se abra
@@ -128,6 +143,25 @@ ion-content {
   position: absolute;
   top: -30px;
   right: 10px;
+}
+
+.bottom-sheet-modal {
+  --height: 50%;
+  align-items: flex-end;
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0 0 0 0;
+}
+
+.custom-button {
+  --background: linear-gradient(145deg, #1a237e, #0d47a1);
+  --color: #FFFFFF; /* Color del texto */
+  --border-radius: 10px; /* Bordes redondeados */
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+  display: flex;
+  justify-content: center;
+  margin-left: 21.500px;
+  margin-right: 21.500px;
 }
 
 </style>

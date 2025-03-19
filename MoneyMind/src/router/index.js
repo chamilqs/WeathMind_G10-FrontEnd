@@ -8,7 +8,9 @@ import RegistroFinanzas from '../views/RegistroFinanzas.vue';
 import MyProfile from '../views/MyProfile.vue';
 import SideNav from '../components/SideNav.vue';
 import HistoryTransaction from '../views/HistoryTransaction.vue';
-import Login from '../views/Login.vue'; // Importa el componente Login.vue
+import Login from '../views/Login.vue';
+import SolicitarTarjeta from '../views/SolicitarTarjeta.vue'; // Importación directa
+import SolicitarCuenta from '../views/SolicitarCuenta.vue'; // Importación directa
 
 const routes = [
   {
@@ -30,26 +32,35 @@ const routes = [
       { path: 'mandy', component: Mandy },
     ],
   },
-  // Añadir la ruta para RegistroFinanzas
   {
     path: '/registro-finanzas',
-    component: RegistroFinanzas
+    component: RegistroFinanzas,
   },
-  { path: '/myprofile', 
-    component: MyProfile 
+  {
+    path: '/myprofile',
+    component: MyProfile,
   },
-  { path: '/sidenav',
-    component: SideNav
+  {
+    path: '/sidenav',
+    component: SideNav,
   },
-  { path: '/historytransaction',
-    component: HistoryTransaction
+  {
+    path: '/historytransaction',
+    component: HistoryTransaction,
   },
-]
-
+  {
+    path: '/solicitartarjeta',
+    component: SolicitarTarjeta, // Usa la importación directa
+  },
+  {
+    path: '/solicitarcuenta',
+    component: SolicitarCuenta, // Usa la importación directa
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

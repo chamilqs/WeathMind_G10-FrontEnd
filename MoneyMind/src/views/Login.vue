@@ -63,6 +63,7 @@
 
 <script>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'; // Importa useRouter para redireccionar
 import { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon } from '@ionic/vue';
 import { eye, eyeOff } from 'ionicons/icons';
 
@@ -70,6 +71,7 @@ export default {
   name: 'UserLogin',
   components: { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon },
   setup() {
+    const router = useRouter(); // Usa el router para redireccionar
     const isLogin = ref(true);
     const fullName = ref('');
     const email = ref('');
@@ -100,7 +102,7 @@ export default {
         const response = await fetch('https://api.tuapp.com/auth/request-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.value })
+          body: JSON.stringify({ email: email.value }),
         });
 
         if (!response.ok) throw new Error('Error al solicitar OTP');
@@ -109,6 +111,7 @@ export default {
         console.log('OTP enviado al email');
       } catch (error) {
         console.error('Error:', error);
+        alert('Error al solicitar OTP. Inténtalo de nuevo.');
       }
     };
 
@@ -118,18 +121,21 @@ export default {
         const response = await fetch('https://api.tuapp.com/auth/verify-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email.value, otp: otp.value })
+          body: JSON.stringify({ email: email.value, otp: otp.value }),
         });
 
         if (!response.ok) throw new Error('OTP incorrecto o expirado');
 
         console.log('Inicio de sesión exitoso');
+        localStorage.setItem('user', JSON.stringify({ email: email.value })); // Guarda el usuario en localStorage
+        router.push('/tabs/homepage'); // Redirige a la página principal
       } catch (error) {
         console.error('Error:', error);
+        alert('OTP incorrecto o expirado. Inténtalo de nuevo.');
       }
     };
 
-    // Función de login con OTP
+    // Función de login
     const login = async () => {
       if (!email.value.trim() || !password.value.trim()) {
         alert('Por favor, ingresa tu correo y contraseña.');
@@ -137,16 +143,33 @@ export default {
       }
 
       try {
-        // Aquí podrías hacer la autenticación del usuario antes de solicitar OTP
-        await requestOtp();
+        const response = await fetch(`http://localhost:3000/users?email=${email.value}`);
+        const users = await response.json();
+
+        if (users.length === 0) {
+          alert('Usuario no encontrado.');
+          return;
+        }
+
+        const user = users[0];
+
+        if (user.password !== password.value) {
+          alert('Contraseña incorrecta.');
+          return;
+        }
+
+        console.log('Inicio de sesión exitoso');
+        localStorage.setItem('user', JSON.stringify(user)); // Guarda el usuario en localStorage
+        router.push('/tabs/homepage'); // Redirige a la página principal
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error en login:', error);
+        alert('Error en el inicio de sesión. Inténtalo de nuevo.');
       }
     };
 
     // Función de registro con validación de contraseña segura
     const signUp = async () => {
-      if (!fullName.value.trim() || !email.value.trim()) {
+      if (!fullName.value.trim() || !email.value.trim() || !password.value.trim()) {
         alert('Por favor, completa todos los campos.');
         return;
       }
@@ -157,29 +180,55 @@ export default {
       }
 
       try {
-        const response = await fetch('https://api.tuapp.com/auth/signup', {
+        // Verificar si el usuario ya existe
+        const response = await fetch(`http://localhost:3000/users?email=${email.value}`);
+        const existingUsers = await response.json();
+
+        if (existingUsers.length > 0) {
+          alert('Este correo ya está registrado.');
+          return;
+        }
+
+        // Crear nuevo usuario
+        const newUser = {
+          fullName: fullName.value,
+          email: email.value,
+          password: password.value,
+        };
+
+        await fetch('http://localhost:3000/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fullName: fullName.value,
-            email: email.value,
-            password: password.value
-          })
+          body: JSON.stringify(newUser),
         });
 
-        if (!response.ok) throw new Error('Error al registrarse');
-
-        console.log('Registro exitoso, por favor inicia sesión.');
+        console.log('Registro exitoso');
+        localStorage.setItem('user', JSON.stringify(newUser)); // Guarda el usuario en localStorage
+        router.push('/tabs/homepage'); // Redirige a la página principal
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error en registro:', error);
+        alert('Error en el registro. Inténtalo de nuevo.');
       }
     };
 
-    return { 
-      isLogin, fullName, email, password, otp, showPassword, togglePassword, login, signUp, 
-      eye, eyeOff, toggleForm, isDarkMode, showOtpInput, verifyOtp 
+    return {
+      isLogin,
+      fullName,
+      email,
+      password,
+      otp,
+      showPassword,
+      togglePassword,
+      login,
+      signUp,
+      eye,
+      eyeOff,
+      toggleForm,
+      isDarkMode,
+      showOtpInput,
+      verifyOtp,
     };
-  }
+  },
 };
 </script>
 

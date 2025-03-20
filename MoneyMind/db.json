@@ -26,5 +26,25 @@
       "tipoCuenta": "corriente",
       "saldoInicial": "500"
     }
+  ],
+  "tarjetas": [
+    {
+      "id": "c554",
+      "userId": "1",
+      "cardNumber": "4578494512324562",
+      "holderName": "Pepito Escobar",
+      "expirationDate": "02/27",
+      "balance": "500",
+      "logo": "/src/assets/icons/mastercard.png"
+    },
+    {
+      "id": "c163",
+      "userId": "1",
+      "cardNumber": "5045",
+      "holderName": "Joselito",
+      "expirationDate": "05/30",
+      "balance": "7800",
+      "logo": "/src/assets/icons/mastercard.png"
+    }
   ]
 }

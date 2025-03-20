@@ -26,7 +26,7 @@ const actionSheetButtons = [
   {
     text: 'Solicitar Tarjeta',
     handler: () => {
-      router.push('/solicitar-tarjeta'); // Redirige al formulario de tarjeta
+      router.push('/solicitartarjeta'); // Redirige al formulario de tarjeta
     },
   },
   {

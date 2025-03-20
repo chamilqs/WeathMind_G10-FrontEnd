@@ -2,6 +2,10 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
+        <!-- Botón "Cancelar" en la parte superior izquierda -->
+        <ion-buttons slot="end">
+          <ion-button color="danger" @click="goToHomePage">Cancelar</ion-button>
+        </ion-buttons>
         <ion-title>Solicitar Cuenta</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -37,13 +41,34 @@
 
 <script setup>
 import { ref } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonButton } from '@ionic/vue';
+import { useRouter } from 'vue-router';
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonButton,
+  IonButtons,
+} from '@ionic/vue';
 
+const router = useRouter();
 
 // Datos del formulario
 const nombreCompleto = ref('');
 const tipoCuenta = ref('');
 const saldoInicial = ref('');
+
+// Función para redirigir a la página de inicio
+const goToHomePage = () => {
+  router.push({ path: '/' }); // Cambia '/' por la ruta de tu página de inicio
+};
 
 // Función para enviar la solicitud
 const solicitarCuenta = async () => {
@@ -82,19 +107,19 @@ const solicitarCuenta = async () => {
 </script>
 
 <style scoped>
-  ion-title {
-    color: black;
-  }
+ion-title {
+  color: black;
+}
 
-  ion-list {
-    padding: 0;
-  }
+ion-list {
+  padding: 0;
+}
 
-  .custom-input::part(native) {
+.custom-input::part(native) {
   color: black; /* Cambia el color del texto ingresado */
 }
 
-  .custom-input ::placeholder {
-    color: gray; /* Color del placeholder */
-  }
+.custom-input ::placeholder {
+  color: gray; /* Color del placeholder */
+}
 </style>

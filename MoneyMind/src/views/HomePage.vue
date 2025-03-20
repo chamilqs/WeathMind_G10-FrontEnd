@@ -28,7 +28,7 @@
 
     <ion-content @click="handleClickOutside">
       <div class="container-components">
-        <Cards class="cards-component" />
+        <Cards class="cards-component" :cards="cards" />
         <AccountCarousel class="AccountCarousel-componet" :cuentas="cuentas" />
       </div>
 
@@ -56,10 +56,10 @@ import { ref } from 'vue';
 import SideNav from '../components/SideNav.vue';
 import { menuController } from '@ionic/vue';
 import { onMounted, onUnmounted } from 'vue';
-import Cards from '../components/Cards.vue';
 import UltimosMovimientos from '../components/UltimosMovimientos.vue';
 import ButtonSheetOpciones from '../components/ButtonSheetOpciones.vue';
 import AccountCarousel from '../components/AccountCarousel.vue';
+import Cards from '../components/Cards.vue';
 
 
 const openMenu = async () => {
@@ -108,6 +108,26 @@ const fetchCuentas = async () => {
 // Llamar a la función al montar el componente
 onMounted(() => {
   fetchCuentas();
+});
+
+// Estado para almacenar las tarjetas
+const cards = ref([]);
+
+// Función para obtener las tarjetas desde db.json
+const fetchCards = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/tarjetas'); // Asegúrate de que la ruta sea correcta
+    const data = await response.json();
+    cards.value = data; // Asignar las tarjetas al estado
+  } catch (error) {
+    console.error('Error al obtener las tarjetas:', error);
+  }
+};
+
+// Llamar a la función al montar el componente
+onMounted(() => {
+  fetchCards();
+  fetchCuentas(); // Asegúrate de que también se carguen las cuentas
 });
 </script>
 

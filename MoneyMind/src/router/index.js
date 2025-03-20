@@ -56,14 +56,6 @@ const routes = [
     path: '/solicitarcuenta',
     component: SolicitarCuenta, // Usa la importación directa
   },
-  {
-    path: '/lista-cuentas',
-    component: () => import('@/views/ListaCuentas.vue'),
-  },
-  {
-    path: '/carrusel-cuentas',
-    component: () => import('@/views/CarruselCuentas.vue'),
-  },
 ];
 
 const router = createRouter({

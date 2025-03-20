@@ -11,7 +11,7 @@
         <ion-card-content>
           <div class="card-content">
             <p style="font-size: 15px;">Balance</p>
-            <h2 style="font-size: 25px;">${{ card.balance.toFixed(2) }}</h2>
+            <h2 style="font-size: 25px;">${{ card.balance }}</h2>
           </div>
         </ion-card-content>
         <p class="serial-card">**** {{ card.cardNumber.slice(-4) }}</p>
@@ -22,14 +22,29 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import Cards from '@/models/Cards';
+import { ref, onMounted } from 'vue';
 import { IonCard, IonCardHeader, IonCardContent } from '@ionic/vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/swiper-bundle.css';
 
 const router = useRouter();
-const cards = ref(Cards.mockData());
+const cards = ref([]); // Inicializa como un array vacío
+
+// Función para obtener las tarjetas desde db.json
+const fetchCards = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/tarjetas'); // Asegúrate de que la ruta sea correcta
+    const data = await response.json();
+    cards.value = data; // Asignar las tarjetas al estado
+  } catch (error) {
+    console.error('Error al obtener las tarjetas:', error);
+  }
+};
+
+// Llama a la función fetchCards cuando el componente se monta
+onMounted(() => {
+  fetchCards();
+});
 
 const goToTransactions = (cardId) => {
   router.push({ path: '/HistoryTransaction', query: { cardId } });

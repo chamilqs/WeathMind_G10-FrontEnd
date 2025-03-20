@@ -32,7 +32,7 @@ const actionSheetButtons = [
   {
     text: 'Solicitar Cuenta',
     handler: () => {
-      router.push('/solicitar-cuenta'); // Redirige al formulario de cuenta
+      router.push('/solicitarcuenta'); // Redirige al formulario de cuenta
     },
   },
   {

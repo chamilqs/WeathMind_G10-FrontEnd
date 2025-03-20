@@ -27,7 +27,10 @@
     </ion-header>
 
     <ion-content @click="handleClickOutside">
-      <Cards />
+      <div class="container-components">
+        <Cards class="cards-component" />
+        <AccountCarousel class="AccountCarousel-componet" :cuentas="cuentas" />
+      </div>
 
       <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
 
@@ -48,8 +51,7 @@
 
 <script setup lang="js">
 import { 
-  IonPage, IonHeader, IonToolbar, IonAvatar, IonModal, IonButton, IonContent, IonGrid, IonRow, 
-  IonCol, } from '@ionic/vue';
+  IonPage, IonHeader, IonToolbar, IonAvatar, IonModal, IonButton, IonContent } from '@ionic/vue';
 import { ref } from 'vue';
 import SideNav from '../components/SideNav.vue';
 import { menuController } from '@ionic/vue';
@@ -57,6 +59,8 @@ import { onMounted, onUnmounted } from 'vue';
 import Cards from '../components/Cards.vue';
 import UltimosMovimientos from '../components/UltimosMovimientos.vue';
 import ButtonSheetOpciones from '../components/ButtonSheetOpciones.vue';
+import AccountCarousel from '../components/AccountCarousel.vue';
+
 
 const openMenu = async () => {
   await menuController.open(); // Asegura que el menú se abra
@@ -86,6 +90,25 @@ const openBottomSheet = () => {
   isOpen.value = true;
   console.log("Modal abierto:", isOpen.value); // Depuración
 };
+
+// Estado para almacenar las cuentas
+const cuentas = ref([]);
+
+// Función para obtener los datos de db.json
+const fetchCuentas = async () => {
+  try {
+    const response = await fetch('/db.json');
+    const data = await response.json();
+    cuentas.value = data.cuentas; // Asignar las cuentas al estado
+  } catch (error) {
+    console.error('Error al obtener las cuentas:', error);
+  }
+};
+
+// Llamar a la función al montar el componente
+onMounted(() => {
+  fetchCuentas();
+});
 </script>
 
 <style>
@@ -163,5 +186,12 @@ ion-content {
   margin-left: 21.500px;
   margin-right: 21.500px;
 }
+
+.cards-component {
+  margin-bottom: 20px;
+  padding-top: 10px;
+}
+
+
 
 </style>

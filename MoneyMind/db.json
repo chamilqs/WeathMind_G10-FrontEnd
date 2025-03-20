@@ -12,5 +12,19 @@
       "email": "Ronald@gmail.com",
       "password": "123456789"
     }
+  ],
+  "cuentas": [
+    {
+      "id": "1cde",
+      "nombreCompleto": "Pablo",
+      "tipoCuenta": "ahorros",
+      "saldoInicial": "100"
+    },
+    {
+      "id": "f069",
+      "nombreCompleto": "Pepe",
+      "tipoCuenta": "corriente",
+      "saldoInicial": "500"
+    }
   ]
 }

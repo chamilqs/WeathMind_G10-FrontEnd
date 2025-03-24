@@ -25,6 +25,12 @@
       "nombreCompleto": "Pepe",
       "tipoCuenta": "corriente",
       "saldoInicial": "500"
+    },
+    {
+      "id": "c55a",
+      "nombreCompleto": "Jose",
+      "tipoCuenta": "ahorros",
+      "saldoInicial": "50000"
     }
   ],
   "tarjetas": [
@@ -45,6 +51,15 @@
       "expirationDate": "05/30",
       "balance": "7800",
       "logo": "/src/assets/icons/mastercard.png"
+    },
+    {
+      "id": "c155",
+      "userId": "1",
+      "cardNumber": "7894",
+      "holderName": "Pedro",
+      "expirationDate": "03/50",
+      "balance": "1500",
+      "type": "MasterCard"
     }
   ]
 }

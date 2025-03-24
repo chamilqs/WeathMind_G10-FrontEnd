@@ -27,10 +27,7 @@
     </ion-header>
 
     <ion-content @click="handleClickOutside">
-      <div class="container-components">
-        <Cards class="cards-component" :cards="cards" />
-        <AccountCarousel class="AccountCarousel-componet" :cuentas="cuentas" />
-      </div>
+      
 
       <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
 

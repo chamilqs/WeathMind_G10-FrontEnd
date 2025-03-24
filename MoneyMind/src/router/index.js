@@ -8,19 +8,16 @@ import RegistroFinanzas from '../views/RegistroFinanzas.vue';
 import MyProfile from '../views/MyProfile.vue';
 import SideNav from '../components/SideNav.vue';
 import HistoryTransaction from '../views/HistoryTransaction.vue';
-import Login from '../views/Login.vue';
-import SolicitarTarjeta from '../views/SolicitarTarjeta.vue'; // Importación directa
-import SolicitarCuenta from '../views/SolicitarCuenta.vue'; // Importación directa
+import CreditCard from '../components/CreditCard.vue';
+import Saving from '../components/Saving.vue';
+import Loan from '../components/Loan.vue';
+import Investment from '../components/Investment.vue';
+import Cash from '../components/Cash.vue';
 
 const routes = [
   {
     path: '/',
-    redirect: '/login', // Redirige a la pantalla de login
-  },
-  {
-    path: '/login', // Ruta del login
-    name: 'Login',
-    component: Login, // Usa el componente Login.vue
+    redirect: '/tabs/homepage'
   },
   {
     path: '/tabs/',
@@ -29,32 +26,57 @@ const routes = [
       { path: 'homepage', component: HomePage },
       { path: 'statistic', component: Statistic },
       { path: 'mycards', component: MyCards },
-      { path: 'mandy', component: Mandy },
-    ],
+      { path: 'mandy', component: Mandy }
+    ]
+  },
+  // Añadir la ruta para RegistroFinanzas
+
+  { path: '/myprofile', 
+    component: MyProfile 
+  },
+  { path: '/sidenav',
+    component: SideNav
   },
   {
     path: '/registro-finanzas',
     component: RegistroFinanzas,
-  },
-  {
-    path: '/myprofile',
-    component: MyProfile,
-  },
-  {
-    path: '/sidenav',
-    component: SideNav,
+    meta: { requiresAuth: true }
   },
   {
     path: '/historytransaction',
     component: HistoryTransaction,
+    meta: { requiresAuth: true }
+  },
+  // Rutas para formularios de productos
+  {
+    path: '/solicitar/tarjeta',
+    name: 'CreditCard',
+    component: CreditCard,
+    meta: { requiresAuth: true }
   },
   {
-    path: '/solicitartarjeta',
-    component: SolicitarTarjeta, // Usa la importación directa
+    path: '/solicitar/cuenta',
+    name: 'Saving',
+    component: Saving,
+    meta: { requiresAuth: true }
   },
   {
-    path: '/solicitarcuenta',
-    component: SolicitarCuenta, // Usa la importación directa
+    path: '/solicitar/prestamo',
+    name: 'Loan',
+    component: Loan,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/solicitar/inversion',
+    name: 'Investment',
+    component: Investment,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/registrar/efectivo',
+    name: 'Cash',
+    component: Cash,
+    meta: { requiresAuth: true }
   },
 ];
 
@@ -62,5 +84,21 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
+/*
+// Guard de navegación para rutas protegidas
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem('authToken');
+  
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next('/login');
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+*/
 
 export default router;

@@ -13,38 +13,60 @@ import Saving from '../components/Saving.vue';
 import Loan from '../components/Loan.vue';
 import Investment from '../components/Investment.vue';
 import Cash from '../components/Cash.vue';
+import Login from '../views/Login.vue';
+import ChangePassword from '../views/ChangePassword.vue';
+import ForgotPassword from '../views/ForgotPassword.vue';
+import NotificationsPage from '../views/NotificationsPage.vue';
+import HelpSupport from '../views/HelpSupport.vue';
 
 const routes = [
   {
     path: '/',
-    redirect: '/tabs/homepage'
+    redirect: '/tabs/login'
   },
   {
     path: '/tabs/',
     component: Tabs,
     children: [
+      { path: 'login', component: Login },
       { path: 'homepage', component: HomePage },
       { path: 'statistic', component: Statistic },
       { path: 'mycards', component: MyCards },
       { path: 'mandy', component: Mandy }
     ]
   },
-  // Añadir la ruta para RegistroFinanzas
-
-  { path: '/myprofile', 
-    component: MyProfile 
-  },
-  { path: '/sidenav',
+  {
+    path: '/sidenav',
     component: SideNav
   },
   {
-    path: '/registro-finanzas',
-    component: RegistroFinanzas,
-    meta: { requiresAuth: true }
+    path: '/myprofile',
+    component: MyProfile
   },
   {
     path: '/historytransaction',
     component: HistoryTransaction,
+    meta: { requiresAuth: true } // Se mantiene solo una vez
+  },
+  {
+    path: '/change-password',
+    component: ChangePassword
+  },
+  {
+    path: '/forgot-password',
+    component: ForgotPassword
+  },
+  {
+    path: '/notifications',
+    component: NotificationsPage
+  },
+  {
+    path: '/help-support',
+    component : HelpSupport
+  },
+  {
+    path: '/registro-finanzas',
+    component: RegistroFinanzas,
     meta: { requiresAuth: true }
   },
   // Rutas para formularios de productos
@@ -78,12 +100,17 @@ const routes = [
     component: Cash,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/help-support', // Corregido (antes estaba fuera del array)
+    component: HelpSupport
+  }
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes
 });
+
 /*
 // Guard de navegación para rutas protegidas
 router.beforeEach((to, from, next) => {
@@ -91,7 +118,7 @@ router.beforeEach((to, from, next) => {
   
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!isAuthenticated) {
-      next('/login');
+      next('/tabs/login'); // Asegurar que esta ruta existe
     } else {
       next();
     }

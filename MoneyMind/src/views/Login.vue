@@ -3,44 +3,51 @@
     <ion-content class="ion-padding">
       <div class="form-container centered">
         <h2 class="text-center">{{ isLogin ? 'Sign In' : 'Sign Up' }}</h2>
-        <p class="text-center welcome-text font-bold">{{ isLogin ? 'Hi, Welcome Back! 👋' : 'Create a new account 🎉' }}</p>
-       
+        <p class="text-center welcome-text font-bold">
+          {{ isLogin ? 'Hi, Welcome Back! 👋' : 'Create a new account 🎉' }}
+        </p>
+
         <ion-list>
           <div v-if="!isLogin" class="input-group">
             <label class="input-label">Full Name</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="fullName" type="text" placeholder="Enter your full name" required></ion-input>
+              <ion-input v-model="fullName" type="text" placeholder="Enter your full name" required />
             </ion-item>
           </div>
- 
+
           <div class="input-group">
             <label class="input-label">Email Address</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="email" type="email" placeholder="Enter your email address" required></ion-input>
+              <ion-input v-model="email" type="email" placeholder="Enter your email address" required />
             </ion-item>
           </div>
- 
+
+          <div v-if="!isLogin" class="input-group">
+            <label class="input-label">Profile Picture URL</label>
+            <ion-item class="input-field" lines="none">
+              <ion-input v-model="profilePicture" type="text" placeholder="https://example.com/image.jpg" />
+            </ion-item>
+          </div>
+
           <div class="input-group">
             <label class="input-label">Password</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" required></ion-input>
-              <ion-icon :icon="showPassword ? eyeOff : eye" slot="end" @click="togglePassword" class="eye-icon"></ion-icon>
+              <ion-input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" required />
+              <ion-icon :icon="showPassword ? eyeOff : eye" slot="end" @click="togglePassword" class="eye-icon" />
             </ion-item>
             <p v-if="!isLogin" class="password-hint">
               Password must be at least 8 characters, include an uppercase letter, a number, and a special character.
             </p>
           </div>
- 
-          <!-- Campo para OTP solo cuando se solicita -->
-          <div v-if="showOtpInput" class="input-group">
-            <label class="input-label">Enter OTP</label>
+
+          <div v-if="!isLogin" class="input-group">
+            <label class="input-label">Confirm Password</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="otp" type="text" placeholder="Enter the OTP sent to your email" required></ion-input>
+              <ion-input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="Confirm your password" required />
             </ion-item>
           </div>
         </ion-list>
- 
-       
+
         <div v-if="isLogin" class="d-flex justify-content-between align-items-center mb-3">
           <div class="form-check">
             <input type="checkbox" class="form-check-input" v-model="rememberMe" />
@@ -48,52 +55,48 @@
           </div>
           <router-link to="/forgot-password" class="text-decoration-none">Forgot Password?</router-link>
         </div>
- 
- 
- 
-        <!-- Botón para Login o Registro -->
+
         <ion-button v-if="!showOtpInput" expand="full" @click="isLogin ? login() : signUp()" class="form-btn">
           {{ isLogin ? 'Sign In' : 'Sign Up' }}
         </ion-button>
- 
-        <!-- Botón para verificar OTP -->
+
         <ion-button v-if="showOtpInput" expand="full" @click="verifyOtp()" class="form-btn verify-btn">
           Verify OTP
         </ion-button>
- 
+
         <p class="text-center account-text">
-          {{ isLogin ? `Don't have an account?` : `Already have an account?` }}
+          {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
           <a href="#" @click.prevent="toggleForm" class="toggle-link">{{ isLogin ? 'Sign Up' : 'Sign In' }}</a>
         </p>
       </div>
     </ion-content>
   </ion-page>
 </template>
- 
- 
- 
+
+
 <script>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router'; // ✅ Importa useRouter
+import { useRouter } from 'vue-router';
 import { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon } from '@ionic/vue';
 import { eye, eyeOff } from 'ionicons/icons';
- 
+
 export default {
   name: 'UserLogin',
   components: { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon },
   setup() {
-    const router = useRouter(); // ✅ Instancia de Vue Router
+    const router = useRouter();
     const isLogin = ref(true);
     const fullName = ref('');
     const email = ref('');
     const password = ref('');
+    const confirmPassword = ref('');
     const otp = ref('');
     const showPassword = ref(false);
     const isDarkMode = ref(false);
     const showOtpInput = ref(false);
-    const rememberMe = ref(false); // ✅ Nuevo estado para recordar credenciales
- 
-    // ✅ Cargar credenciales almacenadas
+    const rememberMe = ref(false);
+    const profilePicture = ref('');
+
     onMounted(() => {
       if (localStorage.getItem('rememberMe') === 'true') {
         email.value = localStorage.getItem('email') || '';
@@ -101,23 +104,18 @@ export default {
         rememberMe.value = true;
       }
     });
- 
-    const togglePassword = () => {
-      showPassword.value = !showPassword.value;
-    };
- 
+
+    const togglePassword = () => showPassword.value = !showPassword.value;
     const toggleForm = () => {
       isLogin.value = !isLogin.value;
       showOtpInput.value = false;
     };
- 
-    // ✅ Función para validar contraseña segura
+
     const validatePassword = (password) => {
       const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       return regex.test(password);
     };
- 
-    // ✅ Guardar o eliminar credenciales según "Remember Me"
+
     const handleRememberMe = () => {
       if (rememberMe.value) {
         localStorage.setItem('email', email.value);
@@ -129,48 +127,114 @@ export default {
         localStorage.removeItem('rememberMe');
       }
     };
- 
-    // ✅ Función de login
-    const login = () => {
+
+    const login = async () => {
       if (!email.value.trim() || !password.value.trim()) {
-        alert('Por favor, ingresa tu correo y contraseña.');
+        alert('Por favor, ingresa tu correo o nombre de usuario y la contraseña.');
         return;
       }
- 
-      if (!validatePassword(password.value)) {
-        alert('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, un número y un carácter especial.');
-        return;
+
+      try {
+        const credential = encodeURIComponent(email.value);
+        const encodedPassword = encodeURIComponent(password.value);
+        const url = `https://dev.genlabs.us/api/account/authenticate?credential=${credential}&password=${encodedPassword}`;
+
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { Accept: '*/*' }
+        });
+
+        const data = await response.json();
+
+        if (data.hasError) {
+          alert('Error al iniciar sesión: ' + (data.error || 'Credenciales incorrectas.'));
+          return;
+        }
+
+        localStorage.setItem('jwtToken', data.jwtToken);
+        handleRememberMe();
+        router.push('/tabs/homepage');
+      } catch (error) {
+        alert('Error al conectar con el servidor: ' + error.message);
       }
- 
-      console.log('Inicio de sesión exitoso');
-      handleRememberMe(); // ✅ Guardar credenciales si está activado "Remember Me"
-      router.push('/tabs/homepage'); // ✅ Redirigir al HomePage
     };
- 
-    // ✅ Función de registro con validación de contraseña fuerte
-    const signUp = () => {
+
+    const signUp = async () => {
       if (!fullName.value.trim() || !email.value.trim() || !password.value.trim()) {
         alert('Por favor, completa todos los campos.');
         return;
       }
- 
+
       if (!validatePassword(password.value)) {
         alert('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, un número y un carácter especial.');
         return;
       }
- 
-      console.log('Registro exitoso');
-      router.push('/tabs/homepage'); // ✅ Redirigir después de registrarse
+
+      if (password.value !== confirmPassword.value) {
+        alert('Las contraseñas no coinciden.');
+        return;
+      }
+
+      const [firstName, ...lastNameParts] = fullName.value.trim().split(' ');
+      const lastName = lastNameParts.join(' ') || 'Apellido';
+      const userName = email.value.split('@')[0];
+
+      const queryParams = new URLSearchParams({
+        firstName,
+        lastName,
+        email: email.value,
+        userName,
+        profilePicture: profilePicture.value || '',
+        password: password.value,
+        confirmPassword: confirmPassword.value,
+      });
+
+      const url = `https://dev.genlabs.us/api/account/register?${queryParams.toString()}`;
+
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { Accept: '*/*' }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.hasError) {
+          const errorMsg = data?.error || 'Error al registrar usuario.';
+          alert('Registro fallido:\n' + errorMsg);
+          return;
+        }
+
+        if (data.jwtToken) {
+          localStorage.setItem('jwtToken', data.jwtToken);
+        }
+
+        router.push('/tabs/homepage');
+      } catch (error) {
+        alert('Error en el registro: ' + error.message);
+      }
     };
- 
+
+    const logout = () => {
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('email');
+      localStorage.removeItem('password');
+      localStorage.removeItem('rememberMe');
+      router.push('/login');
+    };
+
     return {
-      isLogin, fullName, email, password, otp, showPassword, togglePassword, login, signUp,
-      eye, eyeOff, toggleForm, isDarkMode, showOtpInput, rememberMe
+      isLogin, fullName, email, password, confirmPassword, otp,
+      showPassword, togglePassword, login, signUp, logout,
+      eye, eyeOff, toggleForm, isDarkMode, showOtpInput, rememberMe,
+      profilePicture
     };
   }
 };
 </script>
- 
+
  
  
  

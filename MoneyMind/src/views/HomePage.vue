@@ -2,73 +2,56 @@
   <ion-page id="main-content">
     <SideNav />
     <ion-header>
-      <ion-toolbar>
-        <div class="container">
+      <ion-toolbar class="header-toolbar">
+        <div class="header-container">
           <div class="user-info">
-            <ion-avatar>
-              <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50" @click="openMenu" alt="avatar" />
+            <ion-avatar @click="openMenu" class="user-avatar">
+              <img :src="userProfile.profilePicture" alt="avatar" />
             </ion-avatar>
-            <div>
-              <p>Welcome back</p>
-              <h2 class="name">John Doe</h2>
-            </div>
-            <div class="notification">
-              <ion-button 
-                fill="outline"
-                color="primary" 
-                class="round-button"
-                shape="round">
-                <img src="@/assets/icons/icon-notification.png" alt="Icono Personalizado" style="width: 40px; height: 40px;" />
-              </ion-button>
+            <div class="welcome-text">
+              <p class="welcome-message">Welcome back 👋</p>
+              <h2 class="user-name">{{ userProfile.fullName }}</h2>
             </div>
           </div>
+          <ion-button fill="clear" class="notification-button">
+            <img src="@/assets/icons/icon-notification.png" alt="Notifications" />
+          </ion-button>
         </div>
       </ion-toolbar>
     </ion-header>
 
     <ion-content @click="handleClickOutside">
-      
+      <ion-button class="custom-button" @click="openBottomSheet">Últimos Movimientos</ion-button>
 
-      <ion-button class="custom-button" @click="openBottomSheet">Ultimos Movimientos</ion-button>
-
-      <!-- Modal que actuará como Bottom Sheet -->
-      <ion-modal
-        :is-open="isOpen"
-        @didDismiss="isOpen = false"
-        :css-class="['bottom-sheet-modal']"
-      >
+      <ion-modal :is-open="isOpen" @didDismiss="isOpen = false" :css-class="['bottom-sheet-modal']">
         <UltimosMovimientos />
       </ion-modal>
 
       <ButtonSheetOpciones />
-    
     </ion-content>
   </ion-page>
 </template>
 
-<script setup lang="js">
-import { 
-  IonPage, IonHeader, IonToolbar, IonAvatar, IonModal, IonButton, IonContent } from '@ionic/vue';
-import { ref } from 'vue';
+<script setup>
+import {
+  IonPage, IonHeader, IonToolbar, IonAvatar, IonModal, IonButton, IonContent 
+} from '@ionic/vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import SideNav from '../components/SideNav.vue';
 import { menuController } from '@ionic/vue';
-import { onMounted, onUnmounted } from 'vue';
 import UltimosMovimientos from '../components/UltimosMovimientos.vue';
 import ButtonSheetOpciones from '../components/ButtonSheetOpciones.vue';
-import AccountCarousel from '../components/AccountCarousel.vue';
-import Cards from '../components/Cards.vue';
-
 
 const openMenu = async () => {
-  await menuController.open(); // Asegura que el menú se abra
+  await menuController.open();
 };
 
 const handleClickOutside = async (event) => {
-  const menu = await menuController.get('main-menu'); // Usa el ID correcto del menú
+  const menu = await menuController.get('main-menu');
   if (menu && menu.isOpen()) {
     const isClickInsideMenu = event.target.closest('ion-menu');
     if (!isClickInsideMenu) {
-      await menuController.close('main-menu'); // Cierra el menú usando el ID correcto
+      await menuController.close('main-menu');
     }
   }
 };
@@ -81,134 +64,113 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-const isOpen = ref(false); // Cambia isModalOpen por isOpen
-
+const isOpen = ref(false);
 const openBottomSheet = () => {
   isOpen.value = true;
-  console.log("Modal abierto:", isOpen.value); // Depuración
 };
 
-// Estado para almacenar las cuentas
-const cuentas = ref([]);
-
-// Función para obtener los datos de db.json
-const fetchCuentas = async () => {
-  try {
-    const response = await fetch('/db.json');
-    const data = await response.json();
-    cuentas.value = data.cuentas; // Asignar las cuentas al estado
-  } catch (error) {
-    console.error('Error al obtener las cuentas:', error);
-  }
-};
-
-// Llamar a la función al montar el componente
-onMounted(() => {
-  fetchCuentas();
+const userProfile = ref({
+  fullName: 'Usuario',
+  profilePicture: 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
 });
 
-// Estado para almacenar las tarjetas
-const cards = ref([]);
-
-// Función para obtener las tarjetas desde db.json
-const fetchCards = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/tarjetas'); // Asegúrate de que la ruta sea correcta
-    const data = await response.json();
-    cards.value = data; // Asignar las tarjetas al estado
-  } catch (error) {
-    console.error('Error al obtener las tarjetas:', error);
-  }
-};
-
-// Llamar a la función al montar el componente
 onMounted(() => {
-  fetchCards();
-  fetchCuentas(); // Asegúrate de que también se carguen las cuentas
+  const stored = localStorage.getItem('userData');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      userProfile.value.fullName = parsed.fullName || 'Usuario';
+      userProfile.value.profilePicture = parsed.profilePicture || userProfile.value.profilePicture;
+    } catch (error) {
+      console.error('Error al leer userData:', error);
+    }
+  }
 });
 </script>
 
-<style>
-ion-toolbar {
-  --background: #f4f4f4;
+<style scoped>
+ion-toolbar.header-toolbar {
+  --background: white;
   --border-color: transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.welcome-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.user-name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.notification-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: transparent;
+  --box-shadow: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-button img {
+  width: 24px;
+  height: 24px;
 }
 
 ion-content {
   --background: #f4f4f4;
 }
 
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-top: 16px;
-  padding-bottom: 0px;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  color: black;
-}
-
-.name {
-  margin-left: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.round-button {
-  --border-radius: 50%;
-  --background: #f4f4f4;
-  --box-shadow: none;
-  --border-width: 10;
-  --padding-start: 0;
-  --padding-end: 0;
-  --padding-top: 0;
-  --padding-bottom: 0;
-}
-
-.notification {
-  position: relative;
-  left: 70%;
-}
-
-
-.logo {
-  width: 80px;
-  height: auto;
-  position: absolute;
-  top: -30px;
-  right: 10px;
+.custom-button {
+  --background: linear-gradient(145deg, #1a237e, #0d47a1);
+  --color: #ffffff;
+  --border-radius: 12px;
+  margin: 1rem;
+  font-weight: 600;
+  text-transform: none;
 }
 
 .bottom-sheet-modal {
   --height: 50%;
   align-items: flex-end;
-  backdrop-filter: blur(5px); /* Efecto de desenfoque */
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 0 0 0 0;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px 16px 0 0;
 }
-
-.custom-button {
-  --background: linear-gradient(145deg, #1a237e, #0d47a1);
-  --color: #FFFFFF; /* Color del texto */
-  --border-radius: 10px; /* Bordes redondeados */
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
-  display: flex;
-  justify-content: center;
-  margin-left: 21.500px;
-  margin-right: 21.500px;
-}
-
-.cards-component {
-  margin-bottom: 20px;
-  padding-top: 10px;
-}
-
-
-
 </style>

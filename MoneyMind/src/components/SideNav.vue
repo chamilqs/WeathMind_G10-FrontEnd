@@ -3,11 +3,13 @@
     <ion-content>
       <ion-header class="profile-header">
         <ion-toolbar>
+          <ion-buttons slot="start">
             <ion-menu-toggle>
-              <ion-button>
-                <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+              <ion-button fill="clear" class="close-button">
+                <ion-icon slot="icon-only" :icon="closeOutline"></ion-icon>
               </ion-button>
             </ion-menu-toggle>
+          </ion-buttons>
           <ion-title class="title">Profile</ion-title>
         </ion-toolbar>
       </ion-header>
@@ -15,10 +17,10 @@
       <!-- Perfil -->
       <div class="profile-info">
         <ion-avatar class="profile-avatar">
-          <img src="https://i.pravatar.cc/150?img=3" alt="User Avatar" />
+          <img :src="userProfile.profilePicture" alt="User Avatar" />
         </ion-avatar>
-        <h2>Tiana Saris</h2>
-        <p>@Broklyn</p>
+        <h2>{{ userProfile.fullName }}</h2>
+        <p>{{ userProfile.email }}</p>
       </div>
 
       <!-- Lista de opciones -->
@@ -78,25 +80,49 @@
 </template>
 
 <script setup>
-import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonIcon, IonAvatar, IonButton, IonButtons, IonToggle, menuController } from '@ionic/vue';
+import {
+  IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonItemDivider, IonLabel, IonIcon, IonAvatar, IonButton, IonButtons, IonToggle, IonMenuToggle, menuController
+} from '@ionic/vue';
 import { useRouter } from 'vue-router';
-import { chevronBackOutline, personOutline, timeOutline, fingerPrintOutline, lockClosedOutline, lockOpenOutline, notificationsOutline, globeOutline, helpCircleOutline, logOutOutline } from 'ionicons/icons';
+import { ref, onMounted } from 'vue';
+import {
+  chevronBackOutline, personOutline, timeOutline, fingerPrintOutline,
+  lockClosedOutline, lockOpenOutline, notificationsOutline, globeOutline,
+  helpCircleOutline, logOutOutline, closeOutline
+} from 'ionicons/icons';
 
 const router = useRouter();
 
+const userProfile = ref({
+  fullName: 'Usuario',
+  email: 'user@email.com',
+  profilePicture: 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg'
+});
+
+onMounted(() => {
+  const stored = localStorage.getItem('userData');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      userProfile.value.fullName = parsed.fullName || 'Usuario';
+      userProfile.value.email = parsed.email || 'user@email.com';
+      userProfile.value.profilePicture = parsed.profilePicture || userProfile.value.profilePicture;
+    } catch (error) {
+      console.error('Error al leer userData:', error);
+    }
+  }
+});
 
 const goTo = async (path) => {
   await menuController.close();
   router.push(path);
 };
 
-
 const logout = async () => {
   await menuController.close();
   router.push('/login');
 };
 </script>
-
 
 <style scoped>
 .profile-header {
@@ -105,6 +131,17 @@ const logout = async () => {
 
 .title {
   color: black;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.close-button {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: transparent;
+  color: #007bff;
+  font-size: 24px;
+  margin-left: -10px;
 }
 
 .profile-info {
@@ -120,6 +157,8 @@ const logout = async () => {
   width: 80px;
   height: 80px;
   margin-bottom: 10px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .profile-info h2 {

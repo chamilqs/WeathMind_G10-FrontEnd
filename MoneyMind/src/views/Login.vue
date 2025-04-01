@@ -79,6 +79,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon } from '@ionic/vue';
 import { eye, eyeOff } from 'ionicons/icons';
+import { jwtDecode } from 'jwt-decode'; // ✅ Importación correcta
 
 export default {
   name: 'UserLogin',
@@ -139,7 +140,6 @@ export default {
         const encodedPassword = encodeURIComponent(password.value);
         const url = `https://dev.genlabs.us/api/account/authenticate?credential=${credential}&password=${encodedPassword}`;
 
-
         const response = await fetch(url, {
           method: 'POST',
           headers: { Accept: '*/*' }
@@ -147,16 +147,41 @@ export default {
 
         const data = await response.json();
 
+        console.log('Respuesta completa del backend:', data);
+        console.log('Token recibido:', data.jwToken); // ✅ Muestra el token correcto
+
         if (data.hasError) {
           alert('Error al iniciar sesión: ' + (data.error || 'Credenciales incorrectas.'));
           return;
         }
 
-        localStorage.setItem('jwtToken', data.jwtToken);
+        const token = data.jwToken;
+
+        if (typeof token !== 'string' || !token.trim()) {
+          alert('Token inválido recibido del servidor.');
+          return;
+        }
+
+        localStorage.setItem('jwtToken', token);
+
+        const decoded = jwtDecode(token);
+        const userProfile = {
+          userId: decoded.uid,
+          fullName: `${decoded.name} ${decoded.middle_name || ''}`.trim(),
+          email: decoded.email,
+          role: decoded.roles,
+          tokenExpiration: decoded.exp
+        };
+
+        localStorage.setItem('userData', JSON.stringify(userProfile));
+        console.log('Datos del usuario decodificados:', userProfile);
+
         handleRememberMe();
         router.push('/tabs/homepage');
+
       } catch (error) {
-        alert('Error al conectar con el servidor: ' + error.message);
+        alert('Error al conectar o procesar los datos: ' + error.message);
+        console.error(error);
       }
     };
 
@@ -192,7 +217,6 @@ export default {
 
       const url = `https://dev.genlabs.us/api/account/register?${queryParams.toString()}`;
 
-
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -207,8 +231,22 @@ export default {
           return;
         }
 
-        if (data.jwtToken) {
-          localStorage.setItem('jwtToken', data.jwtToken);
+        const token = data.jwToken;
+
+        if (typeof token === 'string' && token.trim()) {
+          localStorage.setItem('jwtToken', token);
+
+          const decoded = jwtDecode(token);
+          const userProfile = {
+            userId: decoded.uid,
+            fullName: `${decoded.name} ${decoded.middle_name || ''}`.trim(),
+            email: decoded.email,
+            role: decoded.roles,
+            tokenExpiration: decoded.exp
+          };
+
+          localStorage.setItem('userData', JSON.stringify(userProfile));
+          console.log('Datos del usuario decodificados:', userProfile);
         }
 
         router.push('/tabs/homepage');
@@ -219,6 +257,7 @@ export default {
 
     const logout = () => {
       localStorage.removeItem('jwtToken');
+      localStorage.removeItem('userData');
       localStorage.removeItem('email');
       localStorage.removeItem('password');
       localStorage.removeItem('rememberMe');
@@ -235,7 +274,8 @@ export default {
 };
 </script>
 
- 
+
+
  
  
 <style>

@@ -1,116 +1,71 @@
 <template>
-    <ion-page>
+  <div>
+    <!-- Botón flotante para abrir el chatbot -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button @click="toggleChat">
+        <ion-icon :icon="chatbubbleOutline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <!-- Chat flotante con Typebot -->
+    <div v-if="isChatOpen" class="chat-popup">
       <ion-header>
         <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-back-button default-href="/"></ion-back-button>
-          </ion-buttons>
           <ion-title>Mandy</ion-title>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" @click="toggleChat">
+              <ion-icon :icon="closeOutline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
         </ion-toolbar>
       </ion-header>
-  
+      
       <ion-content class="chat-container">
-        <div class="chat-date">Today, 04:12 pm</div>
-  
-        <!-- Mensajes -->
-        <div class="chat-message received">
-          <ion-icon :icon="star" class="chat-icon"></ion-icon>
-          <div class="message-bubble">Hi, there!</div>
-        </div>
+        <iframe 
+          src="https://typebot.co/my-typebot-hh7iay8" 
+          class="chat-iframe"
+          frameborder="0"
+        ></iframe>
       </ion-content>
-  
-      <!-- Barra de entrada de mensaje -->
-      <ion-footer class="chat-footer">
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button fill="clear">
-              <ion-icon :icon="imageOutline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-          <ion-input
-            v-model="message"
-            placeholder="Type your message here"
-            class="chat-input"
-          ></ion-input>
-          <ion-buttons slot="end">
-            <ion-button fill="clear" @click="sendMessage">
-              <ion-icon :icon="sendOutline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-footer>
-    </ion-page>
-  </template>
-  
-  <script setup>
-  import { ref } from "vue";
-  import { star, sendOutline, imageOutline } from "ionicons/icons";
-  
-  const message = ref("");
-  
-  const sendMessage = () => {
-    if (message.value.trim() !== "") {
-      console.log("Mensaje enviado:", message.value);
-      message.value = ""; // Limpiar campo después de enviar
-    }
-  };
-  </script>
-  
-  <style scoped>
-	ion-title {
-		color: black;
-	}
-  .chat-container {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-  
-  .chat-date {
-    text-align: center;
-    color: gray;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-  .chat-message {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .received {
-    justify-content: flex-start;
-  }
-  
-  .chat-icon {
-    font-size: 24px;
-    color: blue;
-    margin-right: 8px;
-  }
-  
-  .message-bubble {
-    background: #d4e7fe;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-weight: bold;
-    color: black;
-  }
-  
-  /* Ajustes para la barra de mensajes */
-  .chat-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: white;
-  }
-  
-  .chat-input {
-    background: #d4e7fe;
-    border-radius: 20px;
-    padding: 8px 15px;
-    flex: 1;
-  }
-  </style>
-  
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import { chatbubbleOutline, closeOutline } from "ionicons/icons";
+
+const isChatOpen = ref(false);
+
+const toggleChat = () => {
+  isChatOpen.value = !isChatOpen.value;
+};
+</script>
+
+<style scoped>
+.chat-popup {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 320px;
+  height: 400px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-iframe {
+  width: 100%;
+  height: 100%;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <ion-menu side="start" content-id="main-content" id="MyProfile" swipe-gesture="true">
     <ion-content>
-      <ion-header class="profile-header">
+      <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
             <ion-menu-toggle>
@@ -125,8 +125,9 @@ const logout = async () => {
 </script>
 
 <style scoped>
-.profile-header {
-  --background: white;
+ion-toolbar {
+  --background: #f4f4f4;
+  --color: #333;
 }
 
 .title {
@@ -151,6 +152,15 @@ const logout = async () => {
   padding: 16px;
   text-align: center;
   color: black;
+  background-color: #f4f4f4;
+}
+
+ion-list {
+  padding: 0;
+}
+
+ion-content {
+  --background: #fff;
 }
 
 .profile-avatar {

@@ -22,13 +22,16 @@ import HelpSupport from '../views/HelpSupport.vue';
 const routes = [
   {
     path: '/',
-    redirect: '/tabs/login'
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    component: Login
   },
   {
     path: '/tabs/',
     component: Tabs,
     children: [
-      { path: 'login', component: Login },
       { path: 'homepage', component: HomePage },
       { path: 'statistic', component: Statistic },
       { path: 'mycards', component: MyCards },
@@ -46,7 +49,7 @@ const routes = [
   {
     path: '/historytransaction',
     component: HistoryTransaction,
-    meta: { requiresAuth: true } // Se mantiene solo una vez
+    meta: { requiresAuth: true }
   },
   {
     path: '/change-password',
@@ -99,10 +102,6 @@ const routes = [
     name: 'Cash',
     component: Cash,
     meta: { requiresAuth: true }
-  },
-  {
-    path: '/help-support', // Corregido (antes estaba fuera del array)
-    component: HelpSupport
   }
 ];
 
@@ -110,22 +109,5 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 });
-
-/*
-// Guard de navegación para rutas protegidas
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('authToken');
-  
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next('/tabs/login'); // Asegurar que esta ruta existe
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
-});
-*/
 
 export default router;

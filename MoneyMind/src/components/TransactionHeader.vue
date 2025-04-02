@@ -1,12 +1,16 @@
 <template>
-    <div class="transaction-header">
-        <a href="#" class="previous round">&#8249;</a>
-        <div class="text-content">
-            <h2>Transacciones</h2>
+    <<div class="transaction-header">
+  <router-link to="/tabs/homepage" class="previous round">&#8249;</router-link>
+  <div class="text-content">
+    <!-- Aquí puedes agregar más contenido -->
+               <h2>Transacciones</h2>
             <p>Tu saldo actual</p>
             <h1>$125,000</h1>
-        </div>
-    </div>
+          </div>
+</div>
+
+        
+   
 </template>
 
 <script setup>

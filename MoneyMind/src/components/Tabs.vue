@@ -18,7 +18,7 @@
           <ion-label>Mis Tarjetas</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="mandy" href="/mandy">
+        <ion-tab-button tab="mandy" href="/tabs/mandy">
           <ion-icon :icon="chatbubblesSharp" />
           <ion-label>Mandy</ion-label>
         </ion-tab-button>

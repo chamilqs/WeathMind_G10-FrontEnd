@@ -65,7 +65,7 @@
           <ion-icon slot="start" :icon="globeOutline"></ion-icon>
           <ion-label>Languages</ion-label>
         </ion-item>
-        <ion-item button @click="goTo('/help')">
+        <ion-item button @click="goTo('/help-support')">
           <ion-icon slot="start" :icon="helpCircleOutline"></ion-icon>
           <ion-label>Help and Support</ion-label>
         </ion-item>

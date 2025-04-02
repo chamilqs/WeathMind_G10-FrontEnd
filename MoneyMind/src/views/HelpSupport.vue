@@ -98,6 +98,26 @@ import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeade
   </script>
   
   <style scoped>
+:root {
+  --background-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-color: #212529;
+  --button-bg: #0056b3;
+  --button-hover: #003d80;
+  --border-color: #e0e0e0;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --background-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --button-bg: #0a84ff;
+  --button-hover: #0056b3;
+  --border-color: #444;
+  --shadow-light: rgba(255, 255, 255, 0.1);
+}
+
 
   ion-card {
     max-width: 600px;
@@ -144,6 +164,41 @@ import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeade
   outline: none;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
+
+
+  ion-accordion {
+    margin-bottom: 10px; /* Espacio entre cada acordeón */
+  }
+
+  ion-accordion-group {
+    margin-bottom: 20px; /* Espacio entre grupos de acordeones */
+  }
+  ion-accordion ion-item {
+    --background: transparent;
+    --border-color: var(--border-color);
+    --color: var(--text-color);
+  }
+
+  ion-accordion ion-item ion-label {
+    font-weight: bold;
+    color: var(--text-color);
+  }
+
+  ion-accordion ion-item div {
+    color: var(--text-color);
+  }
+
+  .dark ion-label  {
+    color: #ffffff;
+  }
+
+  .dark ion-accordion ion-item {
+    --background: #1e1e1e;
+    --border-color: var(--border-color);
+  }
+  .dark ion-accordion ion-item ion-label {
+    color: #ffffff;
+  }
 
   </style>
   

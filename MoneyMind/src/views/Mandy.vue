@@ -1,71 +1,75 @@
 <template>
-  <div>
-    <!-- Botón flotante para abrir el chatbot -->
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button @click="toggleChat">
-        <ion-icon :icon="chatbubbleOutline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+  <ion-page>
+    <ion-header class="header">
+      <ion-toolbar class="toolbar">
+        <ion-title class="title">💬 Mandy </ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-    <!-- Chat flotante con Typebot -->
-    <div v-if="isChatOpen" class="chat-popup">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Mandy</ion-title>
-          <ion-buttons slot="end">
-            <ion-button fill="clear" @click="toggleChat">
-              <ion-icon :icon="closeOutline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      
-      <ion-content class="chat-container">
-        <iframe 
-          src="https://typebot.co/my-typebot-hh7iay8" 
-          class="chat-iframe"
-          frameborder="0"
-        ></iframe>
-      </ion-content>
-    </div>
-  </div>
+    <ion-content class="fullscreen">
+      <iframe 
+        :src="iframeUrl" 
+        class="fullscreen-iframe"
+        frameborder="0"
+      ></iframe>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { chatbubbleOutline, closeOutline } from "ionicons/icons";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent
+} from '@ionic/vue';
+import { ref, computed, onMounted } from 'vue';
 
-const isChatOpen = ref(false);
+const jwtToken = ref('');
+const userId = ref('');
 
-const toggleChat = () => {
-  isChatOpen.value = !isChatOpen.value;
-};
+// Leer token y userId desde localStorage
+onMounted(() => {
+  jwtToken.value = localStorage.getItem('jwtToken') || '';
+  userId.value = localStorage.getItem('userId') || '';
+});
+
+// Construir la URL del chatbot con parámetros
+const iframeUrl = computed(() => {
+  const baseUrl = 'https://typebot.co/my-typebot-hh7iay8';
+  return `${baseUrl}/?jwt=${jwtToken.value}&uid=${userId.value}`;
+});
 </script>
 
 <style scoped>
-.chat-popup {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  width: 320px;
-  height: 400px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
+.header {
+  --background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+
 }
 
-.chat-container {
-  flex: 1;
+.toolbar {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.chat-iframe {
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1e3a8a;
+  letter-spacing: 0.5px;
+}
+
+.fullscreen {
+  --background: #f9f9f9;
+  padding: 0;
+}
+
+.fullscreen-iframe {
   width: 100%;
   height: 100%;
+  border: none;
 }
 </style>

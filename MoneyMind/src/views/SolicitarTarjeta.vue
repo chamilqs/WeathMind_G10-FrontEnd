@@ -1,52 +1,56 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <!-- Botón "Cancelar" en la parte superior izquierda -->
+      <ion-toolbar color="light">
         <ion-buttons slot="end">
           <ion-button color="danger" @click="goToHomePage">Cancelar</ion-button>
         </ion-buttons>
-        <ion-title>Solicitar Tarjeta</ion-title>
+        <ion-title class="ion-text-center">Solicitar Tarjeta</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
-      <ion-list>
-        <!-- Campo para el nombre del titular -->
-        <ion-item>
-          <ion-label position="stacked">Nombre del titular</ion-label>
-          <ion-input v-model="holderName" placeholder="Ingresa el nombre del titular" class="custom-input"></ion-input>
-        </ion-item>
+    <ion-content class="ion-padding">
+      <div class="form-container">
+        <div class="form-header">
+          <ion-icon name="card-outline" class="form-icon"></ion-icon>
+          <h2 class="form-title">Formulario de Tarjeta</h2>
+          <p class="form-subtitle">Ingresa los datos para solicitar una nueva tarjeta</p>
+        </div>
 
-        <!-- Campo para el número de tarjeta -->
-        <ion-item>
-          <ion-label position="stacked">Número de tarjeta</ion-label>
-          <ion-input v-model="cardNumber" type="number" placeholder="Ingresa el número de tarjeta" class="custom-input"></ion-input>
-        </ion-item>
+        <ion-list lines="none">
+          <ion-item class="form-item">
+            <ion-label position="floating">Nombre del titular</ion-label>
+            <ion-input v-model="holderName" class="custom-input"></ion-input>
+          </ion-item>
 
-        <!-- Campo para la fecha de expiración -->
-        <ion-item>
-          <ion-label position="stacked">Fecha de expiración</ion-label>
-          <ion-input v-model="expirationDate" placeholder="MM/YY" class="custom-input"></ion-input>
-        </ion-item>
+          <ion-item class="form-item">
+            <ion-label position="floating">Número de tarjeta</ion-label>
+            <ion-input v-model="cardNumber" type="number" class="custom-input"></ion-input>
+          </ion-item>
 
-        <!-- Campo para el saldo inicial -->
-        <ion-item>
-          <ion-label position="stacked">Saldo inicial</ion-label>
-          <ion-input v-model="balance" type="number" placeholder="Ingresa el saldo inicial" class="custom-input"></ion-input>
-        </ion-item>
+          <ion-item class="form-item">
+            <ion-label position="floating">Fecha de expiración</ion-label>
+            <ion-input v-model="expirationDate" placeholder="MM/YY" class="custom-input"></ion-input>
+          </ion-item>
 
-        <!-- Campo para el tipo de tarjeta -->
-        <ion-item>
-          <ion-label position="stacked">Tipo de tarjeta</ion-label>
-          <ion-select v-model="type" placeholder="Selecciona el tipo de tarjeta" class="custom-input">
-            <ion-select-option value="VISA">VISA</ion-select-option>
-            <ion-select-option value="MasterCard">MasterCard</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-list>
+          <ion-item class="form-item">
+            <ion-label position="floating">Saldo inicial</ion-label>
+            <ion-input v-model="balance" type="number" class="custom-input"></ion-input>
+          </ion-item>
 
-      <!-- Botón para enviar la solicitud -->
-      <ion-button expand="full" @click="solicitarTarjeta">Enviar Solicitud</ion-button>
+          <ion-item class="form-item">
+            <ion-label position="floating">Tipo de tarjeta</ion-label>
+            <ion-select v-model="type" class="custom-input">
+              <ion-select-option value="VISA">VISA</ion-select-option>
+              <ion-select-option value="MasterCard">MasterCard</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+
+        <ion-button expand="block" color="primary" @click="solicitarTarjeta" class="submit-button">
+          <ion-icon slot="start" name="send-outline"></ion-icon>
+          Enviar Solicitud
+        </ion-button>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -68,53 +72,46 @@ import {
   IonSelectOption,
   IonButton,
   IonButtons,
+  IonIcon
 } from '@ionic/vue';
 
 const router = useRouter();
-
-// Datos del formulario
 const holderName = ref('');
 const cardNumber = ref('');
 const expirationDate = ref('');
 const balance = ref('');
 const type = ref('');
 
-// Función para redirigir a la página de inicio
 const goToHomePage = () => {
-  router.push({ path: '/' }); // Cambia '/' por la ruta de tu página de inicio
+  router.push({ path: '/' });
 };
 
-// Función para enviar la solicitud
 const solicitarTarjeta = async () => {
   if (!holderName.value || !cardNumber.value || !expirationDate.value || !type.value) {
     alert('Por favor, completa todos los campos obligatorios.');
     return;
   }
 
-  // Crear una nueva tarjeta usando el modelo Card
   const nuevaTarjeta = {
-    id: `c${Math.floor(Math.random() * 1000)}`, // Generar un ID único
-    userId: "1", // userId (puedes cambiarlo según tu lógica)
+    id: `c${Math.floor(Math.random() * 1000)}`,
+    userId: "1",
     cardNumber: cardNumber.value,
     holderName: holderName.value,
     expirationDate: expirationDate.value,
-    balance: balance.value || 0, // Si no se ingresa un saldo, se guarda como 0
-    type: type.value,
+    balance: balance.value || 0,
+    type: type.value
   };
 
   try {
-    // Envía la solicitud a la API (json-server)
     const response = await fetch('http://localhost:3000/tarjetas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(nuevaTarjeta),
+      body: JSON.stringify(nuevaTarjeta)
     });
 
     if (!response.ok) throw new Error('Error al enviar la solicitud');
 
     alert('Solicitud de tarjeta enviada correctamente.');
-
-    // Limpia el formulario después de enviar la solicitud
     holderName.value = '';
     cardNumber.value = '';
     expirationDate.value = '';
@@ -128,19 +125,56 @@ const solicitarTarjeta = async () => {
 </script>
 
 <style scoped>
-ion-title {
-  color: black;
+.form-container {
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  margin: 40px auto;
 }
 
-ion-list {
-  padding: 0;
+.form-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-icon {
+  font-size: 48px;
+  color: #3880ff;
+}
+
+.form-title {
+  margin: 10px 0 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.form-item {
+  margin-bottom: 18px;
+  --highlight-color-focused: #3880ff;
+  --border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  padding-inline-start: 12px;
+  padding-inline-end: 12px;
 }
 
 .custom-input::part(native) {
-  color: black; /* Cambia el color del texto ingresado */
+  color: #000;
 }
 
-.custom-input ::placeholder {
-  color: gray; /* Color del placeholder */
+.submit-button {
+  margin-top: 16px;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 12px;
 }
 </style>

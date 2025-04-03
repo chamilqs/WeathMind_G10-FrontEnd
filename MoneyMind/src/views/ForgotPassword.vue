@@ -7,7 +7,7 @@
        </IonToolbar>
       </IonHeader>
       
-    <ion-content class="ion-padding">
+    <ion-content>
       <div class="container centered">
         <h2>Reset Your Password</h2>
         <p>Enter your email to receive a password reset link.</p>
@@ -41,9 +41,7 @@ const sendResetLink = () => {
   console.log(`Sending password reset link to ${email.value}`);
 };
 
-const goToLogin = () => {
-  router.push('/tabs/login'); // ✅ Redirige al login
-};
+
 </script>
 
 <style scoped>
@@ -52,6 +50,7 @@ const goToLogin = () => {
   --form-bg: #ffffff;
   --text-color: #212529;
   --input-bg: #f1f3f4;
+  --input-border: #ced4da;
   --button-bg: #033974;
   --button-hover: #0056b3;
   --shadow-light: rgba(0, 0, 0, 0.1);
@@ -62,6 +61,7 @@ const goToLogin = () => {
   --form-bg: #1e1e1e;
   --text-color: #ffffff;
   --input-bg: #333;
+  --input-border: #444;
   --button-bg: #0a84ff;
   --button-hover: #0056b3;
   --shadow-light: rgba(255, 255, 255, 0.1);
@@ -88,35 +88,66 @@ ion-content {
   height: 100%;
   background: var(--background-color);
 }
-ion-buttons{
+
+/* Ajustes para el ion-input y su contenedor */
+ion-item {
+  --background: var(--input-bg);
+  --border-radius: 5px;
+  --border-color: var(--input-border);
+  --padding-start: 10px;
+  border-radius: 5px;
+}
+
+ion-input {
+  --background: transparent;
+  --color: var(--text-color);
+}
+
+.dark  ion-page  {
+  background-color: #2c2c2c !important;
+}
+.dark  ion-content  {
+  background-color: #121212 !important;
+}
+.dark ion-item {
+  --background: #2c2c2c !important;
+  --border-color: #444 !important;
+}
+
+.dark ion-input {
+  --color: #ffffff !important;
+}
+
+/* Botones */
+ion-buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
   padding: 1px;
-  background: #0056b3;
+  background: var(--button-bg);
   color: #ced4da;
 }
 
-
+/* Icono */
 .icon-container {
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
-  background: #0056b3;
+  background: var(--button-bg);
   padding: 10px;
   border-radius: 5px;
+  transition: all 0.3s ease-in-out;
 }
 
-.icon-container :hover {
+.icon-container:hover {
   background-color: var(--button-hover);
   transform: scale(1.02);
 }
 
-.icon-container :focus {
+.icon-container:focus {
   outline: none;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
-       
 </style>

@@ -11,7 +11,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="ion-padding">
+    <ion-content class="ion-padding" fullscreen="true">
       <div v-if="displayedTransactions.length">
         <ion-card v-for="transaction in displayedTransactions" :key="transaction.id" class="transaction-card">
           <ion-card-header>
@@ -47,7 +47,6 @@ const router = useRouter();
 const transactions = ref(Transaction.mockData());
 const cardId = ref(null);
 
-// Mostrar todas o solo las de una tarjeta
 const displayedTransactions = computed(() => {
   return cardId.value ? transactions.value.filter(t => t.cardId === cardId.value) : transactions.value;
 });
@@ -72,29 +71,109 @@ onMounted(() => {
 </script>
 
 <style scoped>
+:root {
+  --background-light: #ffffff;
+  --card-light: #f5f5f5;
+  --text-light: #000000;
+  --income-color: #28a745;
+  --expense-color: #dc3545;
+}
+
+ion-page {
+  background-color: var(--background-light);
+}
+
+ion-header {
+  --background: var(--background-light);
+}
+
+ion-toolbar {
+  --background: var(--background-light);
+  --color: var(--text-light);
+}
+
+ion-button {
+  --color: var(--text-light);
+}
+
 .title {
-  color: black;
+  color: var(--text-light);
 }
 
 p {
-  color: black;
+  color: var(--text-light);
 }
 
 ion-card {
-  background-color: #f5f5f5;
+  background-color: var(--card-light);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  width: 100%;
+}
+
+.transaction-details {
+  flex-grow: 1;
 }
 
 .transaction-title {
-  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  font: bold;
+}
+
+.transaction-date {
+  font-size: 12px;
+  color: #6c757d;
+  text-align: left;
+}
+
+.transaction-card {
+  margin-bottom: 15px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.income, .expense {
+  font-weight: bold;
+  font-size: 16px;
+  min-width: 100px;
+  text-align: right;
 }
 
 .income {
-  color: green; /* Color verde para ingresos */
-  font-weight: bold;
+  color: #28a745 !important;
 }
 
 .expense {
-  color: red; /* Color rojo para gastos */
-  font-weight: bold;
+  color: #dc3545 !important;
+}
+
+.transaction-icon {
+  font-size: 24px;
+  color: var(--text-light);
+}
+
+.empty-state {
+  text-align: center;
+  color: gray;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 50px;
+  color: gray;
 }
 </style>

@@ -55,18 +55,90 @@ import HeaderNotifications from "../components/HeaderNotifications.vue";
   </script>
   
   <style scoped>
+:root {
+  --background-color: #f8f9fa;
+  --text-color: #212529;
+  --list-bg: #ffffff;
+  --list-border: #e0e0e0;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+}
 
+.dark {
+  --background-color: #121212;
+  --text-color: #ffffff;
+  --list-bg: #1e1e1e;
+  --list-border: #444;
+  --shadow-light: rgba(255, 255, 255, 0.1);
+}
 
-  ion-list {
-    max-width: 600px;
-    margin: auto;
-  }
-  ion-text {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-  }
+/* Fondo de la pantalla */
+ion-content {
+  --background: var(--background-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+/* Lista de notificaciones */
+ion-list {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 15px;
+  background: var(--list-bg);
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px var(--shadow-light);
+  border: 1px solid var(--list-border);
+}
 
-  </style>
+/* Cada elemento de la lista */
+ion-item {
+  --background: transparent;
+  --border-color: var(--list-border);
+  padding: 12px;
+  border-bottom: 1px solid var(--list-border);
+}
+
+ion-item:last-child {
+  border-bottom: none;
+}
+
+/* Texto dentro de la lista */
+ion-text {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: var(--text-color);
+  font-size: 1.2em;
+  font-weight: bold; 
+}
+
+/* Modo oscuro */
+.dark ion-list {
+  background: var(--list-bg);
+  border-color: var(--list-border);
+  box-shadow: 0px 4px 10px var(--shadow-light);
+  color: var(--text-color);
+  border-radius: 10px;
+}
+
+.dark ion-item {
+  --border-color: var(--list-border);
+
+}
+
+.dark ion-text {
+  color: #121212;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+h2 {
+  color: var(--text-color);
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+</style>
+
   

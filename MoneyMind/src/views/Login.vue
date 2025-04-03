@@ -50,8 +50,8 @@
 
         <div v-if="isLogin" class="d-flex justify-content-between align-items-center mb-3">
           <div class="form-check">
-            <input type="checkbox" class="form-check-input" v-model="rememberMe" />
-            <label class="form-check-label">Remember Me</label>
+            <input type="checkbox" class="form-check-input" v-model="rememberMe"/> <label class="form-check-label">Remember Me</label>
+           
           </div>
           <router-link to="/forgot-password" class="text-decoration-none">Forgot Password?</router-link>
         </div>
@@ -99,6 +99,13 @@ export default {
     const profilePicture = ref('');
 
     onMounted(() => {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+      isDarkMode.value = prefersDark.matches;
+
+      prefersDark.addEventListener('change', (e) => {
+        isDarkMode.value = e.matches;
+      });
+
       if (localStorage.getItem('rememberMe') === 'true') {
         email.value = localStorage.getItem('email') || '';
         password.value = localStorage.getItem('password') || '';
@@ -196,6 +203,9 @@ export default {
         return;
       }
 
+      console.log('Registro exitoso');
+      router.push('/tabs/homepage');
+
       if (password.value !== confirmPassword.value) {
         alert('Las contraseñas no coinciden.');
         return;
@@ -264,6 +274,7 @@ export default {
       router.push('/login');
     };
 
+
     return {
       isLogin, fullName, email, password, confirmPassword, otp,
       showPassword, togglePassword, login, signUp, logout,
@@ -272,6 +283,7 @@ export default {
     };
   }
 };
+
 </script>
 
 
@@ -317,7 +329,13 @@ body {
   width: 90%;
   max-width: 400px;
 }
- 
+ .input-gruop{
+    display: flex;
+    flex-direction: column;
+    align-items:start;
+    justify-content: start;
+    margin-bottom: 20px;
+ }
 /* Texto */
 .text-center {
   text-align: center;
@@ -387,6 +405,62 @@ label {
   color: var(--button-hover);
 }
  
+
+.dark-mode {
+  --background-color: #121212;
+  --form-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --input-bg: #2c2c2c;
+  --input-border: #444;
+  --button-bg: #007bff;
+  --button-hover: #0056b3;
+  --shadow-light: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.dark-mode .form-container {
+  background: var(--form-bg);
+  box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+.dark-mode input,
+.dark-mode .input-field {
+  background-color: var(--input-bg) !important;
+  color: #fff !important;
+  padding: auto;
+
+}
+
+.dark-mode input::placeholder {
+  color: #aaa !important; /* Hace el placeholder más visible */
+}
+
+.dark-mode input:focus {
+  border-color: var(--button-bg) !important;
+  outline: none !important;
+  border-radius: 1px !important;
+  box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.2) !important;
+}
+
+.dark-mode ion-input {
+  --background: #2c2c2c !important; /* Fondo oscuro */
+  --color: #ffffff !important; /* Texto blanco */
+}
+
+.dark-mode ion-item {
+  --background: transparent !important; /* Fondo transparente */
+  --border-color: #444 !important; /* Borde visible */
+}
+
+
+.dark-mode .toggle-link {
+  color: var(--button-bg);
+}
+
 /* Modo Oscuro Automático */
 @media (prefers-color-scheme: dark) {
   :root {

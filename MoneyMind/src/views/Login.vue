@@ -170,6 +170,8 @@ export default {
         }
 
         localStorage.setItem('jwtToken', token);
+        localStorage.setItem('userId', data.id); 
+
 
         const decoded = jwtDecode(token);
         const userProfile = {

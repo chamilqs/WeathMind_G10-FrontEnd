@@ -1,53 +1,60 @@
 <template>
-    <div>
-      <canvas ref="canvas"></canvas>
-    </div>
-  </template>
-  
-  <script setup>
-  import { onMounted, ref } from 'vue';
-  import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js';
-  
-  Chart.register(PieController, ArcElement, Tooltip, Legend);
-  
-  const canvas = ref(null);
-  
-  onMounted(() => {
-    new Chart(canvas.value, {
-      type: 'pie',
-      data: {
-        labels: ['Servicios', 'Educación', 'Compras Online', 'Seguros', 'Supermercado'],
-        datasets: [
-          {
-            data: [21, 26, 21, 16, 16],
-            backgroundColor: ['#9B59B6', '#2ECC71', '#34495E', '#3498DB', '#E67E22'],
-            hoverBackgroundColor: ['#8E44AD', '#27AE60', '#2C3E50', '#2980B9', '#D35400'],
-          },
-        ],
-      },
-      options: {
-        plugins: {
-          legend: {
-            position: 'right',
-            labels: {
-              color: '#000',
-            },
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.label}: ${context.raw}%`,
-            },
-          },
+  <div class="pie-chart-container">
+    <Doughnut :data="chartData" :options="chartOptions" />
+  </div>
+</template>
+
+<script setup>
+import { Doughnut } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement);
+
+const chartData = {
+  labels: ['Otros', 'Supermercado', 'Comida & Bebida'],
+  datasets: [
+    {
+      data: [2873.21, 1460.0, 1418.0],
+      backgroundColor: ['#9ba9b4', '#fcbf49', '#f77f00'],
+      borderWidth: 0,
+    },
+  ],
+};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: {
+        color: '#333',
+        font: {
+          size: 14,
         },
+        usePointStyle: true,
+        padding: 20,
       },
-    });
-  });
-  </script>
-  
-  <style scoped>
-  canvas {
-    max-width: 400px;
-    max-height: 400px;
-  }
-  </style>
-  
+    },
+  },
+};
+</script>
+
+<style scoped>
+.pie-chart-container {
+  width: 100%;
+  height: 250px;
+  position: relative;
+  /* Elimina fondo blanco, sombras y bordes */
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+</style>

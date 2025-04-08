@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <a href="#" class="previous round">&#8249;</a>
+      <router-link to="/tabs/homepage" class="previous round">&#8249;</router-link>
         <div class="text-content">
             <h2>Forgot Passoword</h2>
             <p>Update your password</p>
@@ -10,6 +10,8 @@
 </template>
 
 <script setup>
+
+import { RouterLink } from 'vue-router';
 
 </script>
 

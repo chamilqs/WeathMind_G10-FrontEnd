@@ -1,10 +1,11 @@
 <template>
     <ion-page>
-      <ion-header>
-        <ion-toolbar>
-          <HeaderNotifications />
-        </ion-toolbar>
-      </ion-header>
+            <!-- Encabezado -->
+            <ion-header>
+      <IonToolbar>
+      <HeaderNotifications></HeaderNotifications>
+      </IonToolbar>
+    </ion-header>
   
       <ion-content :fullscreen="true" class="ion-padding">
         <ion-list>
@@ -32,10 +33,13 @@
   
   <script setup>
   import { ref } from "vue";
-  import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, IonList, IonItem, IonLabel, IonText } from "@ionic/vue";
-  import { arrowBack, trash, checkmark } from "ionicons/icons";
+  import { IonPage, IonHeader, IonToolbar, IonContent, IonButtons, IonButton, IonIcon, IonList, IonItem, IonLabel, IonText } from "@ionic/vue";
+  import { trash, checkmark } from "ionicons/icons";
 import HeaderNotifications from "../components/HeaderNotifications.vue";
+
   
+
+
   // Lista de notificaciones (simulación)
   const notifications = ref([
     { title: "Nueva actualización", message: "Hay una nueva versión disponible.", read: false },
@@ -71,6 +75,85 @@ import HeaderNotifications from "../components/HeaderNotifications.vue";
   --shadow-light: rgba(255, 255, 255, 0.1);
 }
 
+
+.header-btn {
+  background: #f9fafb;
+  padding: 10px;
+  padding-left: 20px;
+  position:relative;
+  right: 10px; /* Ajusta la distancia desde la parte izquierda */
+}
+.header {
+    text-align: center;
+    padding: 30px;
+    background: #f9fafb
+   }
+
+.text-content h2 {
+    color: #1f2937;
+    font-weight: semibold;
+    margin: 0;
+}
+
+.text-content p {
+    color: #9ca3af;
+    margin: 0;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.text-content h1 {
+    color: #1e3a8a;
+    font-size: 16px;
+    font-weight: bold; 
+    margin: 10px 0 0;
+}
+
+a {
+   text-decoration: none;
+  display: inline-block;
+  padding: 16px 24px;
+}
+
+a:hover {
+  background-color: #ffffff;
+  color: black;
+}
+
+.previous {
+  background-color: #ffffff;
+  color: #1783ff;
+  size: 20px;
+  border: 0.5px solid #1783ff;
+  position: absolute;
+  top: 35px; /* Ajusta la distancia desde la parte superior */
+  left: 25px; /* Ajusta la distancia desde la parte izquierda */
+  padding: 10px 18px; /* Puedes ajustar el tamaño del botón si lo deseas */
+}
+  ion-card {
+    max-width: 600px;
+    margin: auto;
+    margin-bottom: 20px; /* Espacio entre las tarjetas */
+  }
+  
+  ion-item {
+    margin-bottom: 15px; /* Espacio entre cada campo */
+  }
+  
+  ion-text {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  ion-button {
+  --background: #0056b3 !important; /* Azul oscuro */
+  --color: white !important;
+  --border-radius: 8px;
+  --border: 1px solid #003f7f;
+  font-weight: bold;
+  text-transform: uppercase;
+}
 /* Fondo de la pantalla */
 ion-content {
   --background: var(--background-color);

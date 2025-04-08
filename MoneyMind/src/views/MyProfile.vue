@@ -1,17 +1,11 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <!-- Botón para volver a Home -->
-        <ion-buttons slot="start">
-          <ion-button @click="goToHome">
-            <ion-icon name="arrow-back-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-
-        <ion-title class="title">Mi Perfil</ion-title>
-      </ion-toolbar>
-    </ion-header>
+    <!-- Encabezado -->
+    <IonHeader>
+      <IonToolbar>
+        <HeaderMyProfile></HeaderMyProfile>
+      </IonToolbar>
+    </IonHeader>
 
     <ion-content fullscreen="true">
       <!-- Contenedor para la card de perfil -->
@@ -75,14 +69,13 @@
 
 <script setup>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+// Removed unused useRouter import
 import User from "@/models/User";
+import { IonHeader, IonToolbar } from "@ionic/vue";
+import HeaderMyProfile from "../components/HeaderMyProfile.vue";
 
-const router = useRouter();
+// Removed unused router variable
 
-const goToHome = () => {
-  router.push("/tabs/homepage");
-};
 
 // Cargar datos desde el modelo User.js
 const user = ref(User.mockData());
@@ -98,20 +91,50 @@ const user = ref(User.mockData());
   --shadow-light: rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
-ion-header {
-  background-color: var(--header-bg);
-  box-shadow: 0px 4px 10px var(--shadow-light);
+.dark {
+  --background-color: #121212;
+  --header-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --list-bg: #1e1e1e;
+  --border-color: #444;
+  --shadow-light: rgba(255, 255, 255, 0.1);
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: #f9fafb;
+  position: relative;
 }
 
-ion-toolbar {
-  --background: var(--header-bg);
+/* Botón a la izquierda */
+.header-top .left {
+  display: flex;
+  justify-content: space-between;
 }
 
-.title {
-  color: var(--text-color);
-  text-align: center;
-  font-size: 18px;
+/* Textos centrados */
+
+
+/* Eliminar margen para que suban */
+.center h2 {
+  margin: 0;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.center p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.center h1 {
+  margin: 5px 0 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1e3a8a;
 }
 
 /* Contenedor del perfil */
@@ -160,6 +183,7 @@ ion-avatar {
   border: 3px solid var(--border-color);
   justify-content: center;
 }
+
 .avatar-container {
   position: relative;
   display: flex;
@@ -168,8 +192,9 @@ ion-avatar {
   width: 100%;
 }
 
+/* Botón de editar */
 .edit-button {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   background: var(--header-bg);
@@ -201,15 +226,6 @@ ion-item:last-child {
   border-bottom: none;
 }
 
-ion-buttons ion-button {
-  --color: var(--text-color) !important;
-}
-
-ion-icon {
-  color: var(--text-color) !important;
-  font-size: 24px;
-}
-
 /* Texto */
 .label {
   font-size: 14px;
@@ -223,4 +239,16 @@ h3 {
   font-weight: normal;
   color: var(--text-color);
 }
+
+/* Botón general */
+ion-button {
+  --background: #0056b3 !important;
+  --color: white !important;
+  --border-radius: 8px;
+  --border: 1px solid #003f7f;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+
 </style>

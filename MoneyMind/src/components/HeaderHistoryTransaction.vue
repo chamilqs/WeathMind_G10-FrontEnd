@@ -1,26 +1,25 @@
 <template>
-  <div class="transaction-header">
-<router-link to="/tabs/homepage" class="previous round">&#8249;</router-link>
-<div class="text-content">
-  <!-- Aquí puedes agregar más contenido -->
-          <h2>Change Password</h2>
-          <p>Update your password</p>
+  <div class="header">
+    <router-link to="/tabs/homepage" class="previous round">&#8249;</router-link>
+      <div class="text-content">
+          <h2>History  Transaction</h2>
+          <p>Check your transactions</p>
           <h1>MoneyMind</h1>
-        </div>
-</div>
-
-      
- 
+      </div>
+  </div>
 </template>
 
 <script setup>
-import { IonButton, IonIcon } from '@ionic/vue';
+
+import { RouterLink } from 'vue-router';
+import Transaction from '@/models/Transaction';
+
 </script>
 
 
 <style scoped>
 
-.transaction-header {
+.header {
   text-align: center;
   padding: 30px;
   background: #f9fafb

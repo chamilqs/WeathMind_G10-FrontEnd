@@ -1,10 +1,13 @@
 <template>
   <ion-page>
-    <Ion-header>
-        <Ion-toolbar>
-         <HeaderHelpSupport />
-        </Ion-toolbar>
-      </Ion-header>
+       <!-- Encabezado -->
+        <ion-header>
+      <IonToolbar>
+        <HeaderHelpSupport></HeaderHelpSupport>
+      </IonToolbar>
+
+    </ion-header>
+
   
       <ion-content :fullscreen="true" class="ion-padding">
         <!-- Sección de Preguntas Frecuentes -->
@@ -60,8 +63,10 @@
   
   <script setup>
 import { ref } from 'vue';
-import HeaderHelpSupport from '../components/HeaderHelpSupport.vue';
 import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeader } from '@ionic/vue';
+import HeaderHelpSupport from '../components/HeaderHelpSupport.vue';
+
+
 
 
 // Removed unused router variable
@@ -95,6 +100,8 @@ import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeade
     email.value = "";
     message.value = "";
   };
+
+
   </script>
   
   <style scoped>
@@ -118,7 +125,60 @@ import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeade
   --shadow-light: rgba(255, 255, 255, 0.1);
 }
 
+.header-btn {
+  background: #f9fafb;
+  padding: 10px;
+  padding-left: 20px;
+  position:relative;
+  right: 10px; /* Ajusta la distancia desde la parte izquierda */
+}
+.header {
+    text-align: center;
+    padding: 30px;
+    background: #f9fafb
+   }
 
+.text-content h2 {
+    color: #1f2937;
+    font-weight: semibold;
+    margin: 0;
+}
+
+.text-content p {
+    color: #9ca3af;
+    margin: 0;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.text-content h1 {
+    color: #1e3a8a;
+    font-size: 16px;
+    font-weight: bold; 
+    margin: 10px 0 0;
+}
+
+a {
+   text-decoration: none;
+  display: inline-block;
+  padding: 16px 24px;
+}
+
+a:hover {
+  background-color: #ffffff;
+  color: black;
+}
+
+.previous {
+  background-color: #ffffff;
+  color: #1783ff;
+  size: 20px;
+  border: 0.5px solid #1783ff;
+  position: absolute;
+  top: 35px; /* Ajusta la distancia desde la parte superior */
+  left: 25px; /* Ajusta la distancia desde la parte izquierda */
+  padding: 10px 18px; /* Puedes ajustar el tamaño del botón si lo deseas */
+}
   ion-card {
     max-width: 600px;
     margin: auto;
@@ -135,13 +195,13 @@ import { IonPage, IonContent, IonItem, IonInput, IonButton, IonToolbar, IonHeade
     margin-top: 10px;
   }
 
-  ion-buttons{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 1px;
-  background: #0056b3;
-  color: #ced4da;
+  ion-button {
+  --background: #0056b3 !important; /* Azul oscuro */
+  --color: white !important;
+  --border-radius: 8px;
+  --border: 1px solid #003f7f;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 

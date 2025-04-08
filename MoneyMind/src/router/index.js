@@ -18,6 +18,7 @@ import ChangePassword from '../views/ChangePassword.vue';
 import ForgotPassword from '../views/ForgotPassword.vue';
 import NotificationsPage from '../views/NotificationsPage.vue';
 import HelpSupport from '../views/HelpSupport.vue';
+import ConfirmEmail from '../views/ConfirmEmail.vue';
 
 const routes = [
   {
@@ -102,8 +103,11 @@ const routes = [
     name: 'Cash',
     component: Cash,
     meta: { requiresAuth: true }
-  }
-];
+  },
+{path: '/User/ConfirmEmail',
+ component: ConfirmEmail,
+}
+  ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

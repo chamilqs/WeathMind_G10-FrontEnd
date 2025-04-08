@@ -1,3 +1,4 @@
+<!-- src/views/UserLogin.vue -->
 <template>
   <ion-page :class="{ 'dark-mode': isDarkMode }">
     <ion-content class="ion-padding">
@@ -19,13 +20,6 @@
             <label class="input-label">Email Address</label>
             <ion-item class="input-field" lines="none">
               <ion-input v-model="email" type="email" placeholder="Enter your email address" required />
-            </ion-item>
-          </div>
-
-          <div v-if="!isLogin" class="input-group">
-            <label class="input-label">Profile Picture URL</label>
-            <ion-item class="input-field" lines="none">
-              <ion-input v-model="profilePicture" type="text" placeholder="https://example.com/image.jpg" />
             </ion-item>
           </div>
 
@@ -51,7 +45,6 @@
         <div v-if="isLogin" class="d-flex justify-content-between align-items-center mb-3">
           <div class="form-check">
             <input type="checkbox" class="form-check-input" v-model="rememberMe"/> <label class="form-check-label">Remember Me</label>
-           
           </div>
           <router-link to="/forgot-password" class="text-decoration-none">Forgot Password?</router-link>
         </div>
@@ -73,224 +66,165 @@
   </ion-page>
 </template>
 
-
-<script>
+<script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon } from '@ionic/vue';
 import { eye, eyeOff } from 'ionicons/icons';
-import { jwtDecode } from 'jwt-decode'; // ✅ Importación correcta
+import { jwtDecode } from 'jwt-decode';
 
-export default {
-  name: 'UserLogin',
-  components: { IonPage, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon },
-  setup() {
-    const router = useRouter();
-    const isLogin = ref(true);
-    const fullName = ref('');
-    const email = ref('');
-    const password = ref('');
-    const confirmPassword = ref('');
-    const otp = ref('');
-    const showPassword = ref(false);
-    const isDarkMode = ref(false);
-    const showOtpInput = ref(false);
-    const rememberMe = ref(false);
-    const profilePicture = ref('');
+const router = useRouter();
+const isLogin = ref(true);
+const fullName = ref('');
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const showPassword = ref(false);
+const isDarkMode = ref(false);
+const showOtpInput = ref(false);
+const rememberMe = ref(false);
 
-    onMounted(() => {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-      isDarkMode.value = prefersDark.matches;
+onMounted(() => {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+  isDarkMode.value = prefersDark.matches;
+  prefersDark.addEventListener('change', (e) => {
+    isDarkMode.value = e.matches;
+  });
 
-      prefersDark.addEventListener('change', (e) => {
-        isDarkMode.value = e.matches;
-      });
+  if (localStorage.getItem('rememberMe') === 'true') {
+    email.value = localStorage.getItem('email') || '';
+    password.value = localStorage.getItem('password') || '';
+    rememberMe.value = true;
+  }
+});
 
-      if (localStorage.getItem('rememberMe') === 'true') {
-        email.value = localStorage.getItem('email') || '';
-        password.value = localStorage.getItem('password') || '';
-        rememberMe.value = true;
-      }
-    });
+const togglePassword = () => showPassword.value = !showPassword.value;
+const toggleForm = () => {
+  isLogin.value = !isLogin.value;
+  showOtpInput.value = false;
+};
 
-    const togglePassword = () => showPassword.value = !showPassword.value;
-    const toggleForm = () => {
-      isLogin.value = !isLogin.value;
-      showOtpInput.value = false;
-    };
+const validatePassword = (password) => {
+  const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+};
 
-    const validatePassword = (password) => {
-      const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      return regex.test(password);
-    };
-
-    const handleRememberMe = () => {
-      if (rememberMe.value) {
-        localStorage.setItem('email', email.value);
-        localStorage.setItem('password', password.value);
-        localStorage.setItem('rememberMe', 'true');
-      } else {
-        localStorage.removeItem('email');
-        localStorage.removeItem('password');
-        localStorage.removeItem('rememberMe');
-      }
-    };
-
-    const login = async () => {
-      if (!email.value.trim() || !password.value.trim()) {
-        alert('Por favor, ingresa tu correo o nombre de usuario y la contraseña.');
-        return;
-      }
-
-      try {
-        const credential = encodeURIComponent(email.value);
-        const encodedPassword = encodeURIComponent(password.value);
-        const url = `https://dev.genlabs.us/api/account/authenticate?credential=${credential}&password=${encodedPassword}`;
-
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { Accept: '*/*' }
-        });
-
-        const data = await response.json();
-
-        console.log('Respuesta completa del backend:', data);
-        console.log('Token recibido:', data.jwToken); // ✅ Muestra el token correcto
-
-        if (data.hasError) {
-          alert('Error al iniciar sesión: ' + (data.error || 'Credenciales incorrectas.'));
-          return;
-        }
-
-        const token = data.jwToken;
-
-        if (typeof token !== 'string' || !token.trim()) {
-          alert('Token inválido recibido del servidor.');
-          return;
-        }
-
-        localStorage.setItem('jwtToken', token);
-        localStorage.setItem('userId', data.id); 
-
-
-        const decoded = jwtDecode(token);
-        const userProfile = {
-          userId: decoded.uid,
-          fullName: `${decoded.name} ${decoded.middle_name || ''}`.trim(),
-          email: decoded.email,
-          role: decoded.roles,
-          tokenExpiration: decoded.exp
-        };
-
-        localStorage.setItem('userData', JSON.stringify(userProfile));
-        console.log('Datos del usuario decodificados:', userProfile);
-
-        handleRememberMe();
-        router.push('/tabs/homepage');
-
-      } catch (error) {
-        alert('Error al conectar o procesar los datos: ' + error.message);
-        console.error(error);
-      }
-    };
-
-    const signUp = async () => {
-      if (!fullName.value.trim() || !email.value.trim() || !password.value.trim()) {
-        alert('Por favor, completa todos los campos.');
-        return;
-      }
-
-      if (!validatePassword(password.value)) {
-        alert('La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, un número y un carácter especial.');
-        return;
-      }
-
-      console.log('Registro exitoso');
-      router.push('/tabs/homepage');
-
-      if (password.value !== confirmPassword.value) {
-        alert('Las contraseñas no coinciden.');
-        return;
-      }
-
-      const [firstName, ...lastNameParts] = fullName.value.trim().split(' ');
-      const lastName = lastNameParts.join(' ') || 'Apellido';
-      const userName = email.value.split('@')[0];
-
-      const queryParams = new URLSearchParams({
-        firstName,
-        lastName,
-        email: email.value,
-        userName,
-        profilePicture: profilePicture.value || '',
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-      });
-
-      const url = `https://dev.genlabs.us/api/account/register?${queryParams.toString()}`;
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { Accept: '*/*' }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || data.hasError) {
-          const errorMsg = data?.error || 'Error al registrar usuario.';
-          alert('Registro fallido:\n' + errorMsg);
-          return;
-        }
-
-        const token = data.jwToken;
-
-        if (typeof token === 'string' && token.trim()) {
-          localStorage.setItem('jwtToken', token);
-
-          const decoded = jwtDecode(token);
-          const userProfile = {
-            userId: decoded.uid,
-            fullName: `${decoded.name} ${decoded.middle_name || ''}`.trim(),
-            email: decoded.email,
-            role: decoded.roles,
-            tokenExpiration: decoded.exp
-          };
-
-          localStorage.setItem('userData', JSON.stringify(userProfile));
-          console.log('Datos del usuario decodificados:', userProfile);
-        }
-
-        router.push('/tabs/homepage');
-      } catch (error) {
-        alert('Error en el registro: ' + error.message);
-      }
-    };
-
-    const logout = () => {
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('userData');
-      localStorage.removeItem('email');
-      localStorage.removeItem('password');
-      localStorage.removeItem('rememberMe');
-      router.push('/login');
-    };
-
-
-    return {
-      isLogin, fullName, email, password, confirmPassword, otp,
-      showPassword, togglePassword, login, signUp, logout,
-      eye, eyeOff, toggleForm, isDarkMode, showOtpInput, rememberMe,
-      profilePicture
-    };
+const handleRememberMe = () => {
+  if (rememberMe.value) {
+    localStorage.setItem('email', email.value);
+    localStorage.setItem('password', password.value);
+    localStorage.setItem('rememberMe', 'true');
+  } else {
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+    localStorage.removeItem('rememberMe');
   }
 };
 
+const login = async () => {
+  if (!email.value.trim() || !password.value.trim()) {
+    alert('Por favor, ingresa tu correo y contraseña.');
+    return;
+  }
+
+  try {
+    const credential = encodeURIComponent(email.value);
+    const encodedPassword = encodeURIComponent(password.value);
+    const url = `https://dev.genlabs.us/api/account/authenticate?credential=${credential}&password=${encodedPassword}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { Accept: '*/*' }
+    });
+
+    const data = await response.json();
+
+    if (data.hasError) {
+      alert('Error al iniciar sesión: ' + (data.error || 'Credenciales incorrectas.'));
+      return;
+    }
+
+    const token = data.jwToken;
+    if (!token || typeof token !== 'string') {
+      alert('Token inválido recibido.');
+      return;
+    }
+
+    localStorage.setItem('jwtToken', token);
+    localStorage.setItem('userId', data.id);
+
+    const decoded = jwtDecode(token);
+    const userProfile = {
+      userId: decoded.uid,
+      fullName: `${decoded.name} ${decoded.middle_name || ''}`.trim(),
+      email: decoded.email,
+      role: decoded.roles,
+      tokenExpiration: decoded.exp
+    };
+
+    localStorage.setItem('userData', JSON.stringify(userProfile));
+    handleRememberMe();
+    router.push('/tabs/homepage');
+  } catch (error) {
+    alert('Error al iniciar sesión: ' + error.message);
+  }
+};
+
+const signUp = async () => {
+  if (!fullName.value || !email.value || !password.value) {
+    alert('Por favor, completa todos los campos.');
+    return;
+  }
+
+  if (password.value !== confirmPassword.value) {
+    alert('Las contraseñas no coinciden.');
+    return;
+  }
+
+  if (!validatePassword(password.value)) {
+    alert('Contraseña débil. Requiere al menos 8 caracteres, una mayúscula, un número y un símbolo.');
+    return;
+  }
+
+  const [firstName, ...lastNameParts] = fullName.value.trim().split(' ');
+  const lastName = lastNameParts.join(' ') || 'Apellido';
+  const userName = email.value.split('@')[0];
+
+  const defaultProfilePicture = 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg';
+
+  const queryParams = new URLSearchParams({
+    firstName,
+    lastName,
+    email: email.value,
+    userName,
+    profilePicture: defaultProfilePicture,
+    password: password.value,
+    confirmPassword: confirmPassword.value,
+  });
+
+  const url = `https://dev.genlabs.us/api/account/register?${queryParams.toString()}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { Accept: '*/*' }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || data.hasError) {
+      alert('Error: ' + (data?.error || 'No se pudo completar el registro.'));
+      return;
+    }
+
+    alert('Registro exitoso. Por favor revisa tu correo para confirmar tu cuenta.');
+    router.push('/login');
+  } catch (error) {
+    alert('Error en el registro: ' + error.message);
+  }
+};
 </script>
 
-
-
- 
  
 <style>
 :root {

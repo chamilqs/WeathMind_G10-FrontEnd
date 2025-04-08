@@ -7,8 +7,6 @@
       </IonToolbar>
     </IonHeader>
 
-
-
     <ion-content fullscreen="true">
       <!-- Contenedor para la card de perfil -->
       <div class="profile-container">

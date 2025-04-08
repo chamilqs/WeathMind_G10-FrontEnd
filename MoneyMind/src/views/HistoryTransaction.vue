@@ -1,15 +1,11 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button @click="goBack">
-            <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-title class="title">Transaction History</ion-title>
-      </ion-toolbar>
-    </ion-header>
+       <!-- Encabezado -->
+    <IonHeader>
+      <IonToolbar>
+        <HeaderHistoryTransaction></HeaderHistoryTransaction>
+       </IonToolbar>
+    </IonHeader>
 
     <ion-content class="ion-padding" fullscreen="true">
       <div v-if="displayedTransactions.length">
@@ -39,11 +35,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import Transaction from '@/models/Transaction';
+import { IonHeader, IonToolbar } from '@ionic/vue';
+import HeaderHistoryTransaction from '../components/HeaderHistoryTransaction.vue';
 
 const route = useRoute();
-const router = useRouter();
+
+
+
+// Mock data for transactions
+// In a real application, you would fetch this data from an API or a store
 const transactions = ref(Transaction.mockData());
 const cardId = ref(null);
 
@@ -51,9 +53,7 @@ const displayedTransactions = computed(() => {
   return cardId.value ? transactions.value.filter(t => t.cardId === cardId.value) : transactions.value;
 });
 
-const goBack = () => {
-  router.push('/tabs/homepage');
-};
+
 
 const getIcon = (category) => {
   switch (category) {
@@ -176,4 +176,5 @@ ion-card {
   font-size: 50px;
   color: gray;
 }
+
 </style>

@@ -2,15 +2,18 @@
   <ion-page>
     <!-- Encabezado -->
     <ion-header>
-      <ion-toolbar>
-        <HeaderChangePassword />
-      </ion-toolbar>
+      <IonToolbar>
+        <HeaderChangePassword></HeaderChangePassword>
+      </IonToolbar>
+
     </ion-header>
 
     <!-- Contenido -->
     <ion-content class="ion-padding" fullscreen="true">
+      
       <!-- Contenedor centrado -->
       <div class="d-flex justify-content-center align-items-center vh-100 centered">
+        
         <ion-card class="p-4 shadow-lg">
           <ion-card-header class="text-center">
             <ion-card-title class="fs-4">Actualizar Contraseña</ion-card-title>
@@ -56,32 +59,53 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import HeaderChangePassword from "../components/HeaderChangePassword.vue";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { alertController } from '@ionic/vue'
+import HeaderChangePassword from '../components/HeaderChangePassword.vue'
 
-const router = useRouter();
-const oldPassword = ref("");
-const newPassword = ref("");
-const confirmPassword = ref("");
-const errorMessage = ref("");
+const router = useRouter()
 
-const changePassword = () => {
+
+// Variables reactivas para las contraseñas
+const currentPassword = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
+
+
+
+const showAlert = async (header, message) => {
+  const alert = await alertController.create({
+    header,
+    message,
+    buttons: ['OK']
+  })
+  await alert.present()
+}
+
+const changePassword = async () => {
+  if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
+    return showAlert('Missing fields', 'Please fill in all fields')
+  }
+
   if (newPassword.value !== confirmPassword.value) {
-    errorMessage.value = "Las contraseñas no coinciden.";
-    return;
+    return showAlert('Error', 'New passwords do not match')
   }
-  if (newPassword.value.length < 8) {
-    errorMessage.value = "Debe tener al menos 8 caracteres.";
-    return;
-  }
-  console.log("Contraseña actualizada");
-  errorMessage.value = "";
-};
 
-const goBack = () => {
-  router.push("/tabs/homepage");
-};
+  try {
+    // Aquí va la llamada real al backend
+    console.log('Enviando cambio de contraseña:', {
+      current: currentPassword.value,
+      new: newPassword.value
+    })
+
+    // Simulación de éxito
+    await showAlert('Success', 'Password changed successfully')
+    router.push('/tabs/homepage')
+  } catch (error) {
+    await showAlert('Error', 'Failed to change password')
+  }
+}
 </script>
 
 <style scoped>
@@ -95,6 +119,70 @@ const goBack = () => {
   --ion-label-color: gray;
   --ion-button-background: #0056b3;
   --ion-button-color: white;
+}
+
+.header-btn {
+  background: #f9fafb;
+  padding: 10px;
+  padding-left: 20px;
+  position:relative;
+  right: 10px; /* Ajusta la distancia desde la parte izquierda */
+}
+.header {
+    text-align: center;
+    padding: 30px;
+    background: #f9fafb
+   }
+
+.text-content h2 {
+    color: #1f2937;
+    font-weight: semibold;
+    margin: 0;
+}
+
+.text-content p {
+    color: #9ca3af;
+    margin: 0;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.text-content h1 {
+    color: #1e3a8a;
+    font-size: 16px;
+    font-weight: bold; 
+    margin: 10px 0 0;
+}
+
+a {
+   text-decoration: none;
+  display: inline-block;
+  padding: 16px 24px;
+}
+
+a:hover {
+  background-color: #ffffff;
+  color: black;
+}
+
+.previous {
+  background-color: #ffffff;
+  color: #1783ff;
+  size: 20px;
+  border: 0.5px solid #1783ff;
+  position: absolute;
+  top: 35px; /* Ajusta la distancia desde la parte superior */
+  left: 25px; /* Ajusta la distancia desde la parte izquierda */
+  padding: 10px 18px; /* Puedes ajustar el tamaño del botón si lo deseas */
+}
+
+.next {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.round {
+  border-radius: 50%;
 }
 
 /* Fondo general */

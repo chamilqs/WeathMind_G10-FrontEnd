@@ -35,7 +35,8 @@ const routes = [
       { path: 'homepage', component: HomePage },
       { path: 'statistic', component: Statistic },
       { path: 'mycards', component: MyCards },
-      { path: 'mandy', component: Mandy }
+      { path: 'mandy', component: Mandy },
+      
     ]
   },
   {

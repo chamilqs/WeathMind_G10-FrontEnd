@@ -1,5 +1,5 @@
 <template>
-    <<div class="transaction-header">
+    <div class="transaction-header">
   <router-link to="/tabs/homepage" class="previous round">&#8249;</router-link>
   <div class="text-content">
     <!-- Aquí puedes agregar más contenido -->
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { IonButton, IonIcon } from '@ionic/vue';
+
 </script>
 
 

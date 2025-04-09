@@ -12,6 +12,7 @@
 	  <ion-content class="ion-padding">
 		<div class="form-container">
 		  <ion-list lines="none">
+  
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Tipo</ion-label>
 			  <ion-select v-model="tipo" placeholder="Seleccionar tipo">
@@ -22,12 +23,17 @@
   
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Monto</ion-label>
-			  <ion-input v-model="monto" type="number" placeholder="$0.00"></ion-input>
+			  <ion-input v-model="monto" type="number" placeholder="$0.00" />
 			</ion-item>
   
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Fecha</ion-label>
-			  <ion-input v-model="fecha" type="date"></ion-input>
+			  <ion-input v-model="fecha" type="date" />
+			</ion-item>
+  
+			<ion-item class="custom-item">
+			  <ion-label position="stacked">Descripción</ion-label>
+			  <ion-input v-model="descripcion" placeholder="Ej: Pago de factura" />
 			</ion-item>
   
 			<ion-item class="custom-item">
@@ -40,12 +46,23 @@
 			</ion-item>
   
 			<ion-item class="custom-item">
-			  <ion-label position="stacked">Tipo de cuenta</ion-label>
-			  <ion-select v-model="tipoCuenta" placeholder="Seleccionar tipo de cuenta">
-				<ion-select-option value="debito">Débito</ion-select-option>
-				<ion-select-option value="credito">Crédito</ion-select-option>
+			  <ion-label position="stacked">Producto origen</ion-label>
+			  <ion-select v-model="fromProductId" placeholder="Selecciona producto">
+				<ion-select-option v-for="p in productos" :key="p.id" :value="p.id">
+				  {{ p.name }} - {{ p.productType }}
+				</ion-select-option>
 			  </ion-select>
 			</ion-item>
+  
+			<ion-item class="custom-item">
+			  <ion-label position="stacked">Producto destino</ion-label>
+			  <ion-select v-model="toProductId" placeholder="Selecciona producto">
+				<ion-select-option v-for="p in productos" :key="p.id" :value="p.id">
+				  {{ p.name }} - {{ p.productType }}
+				</ion-select-option>
+			  </ion-select>
+			</ion-item>
+  
 		  </ion-list>
   
 		  <ion-button expand="full" color="primary" class="save-button" @click="guardar">
@@ -57,53 +74,128 @@
   </template>
   
   <script setup>
-  const guardar = async () => {
+  import {
+	IonPage, IonHeader, IonToolbar, IonButtons, IonBackButton,
+	IonTitle, IonContent, IonList, IonItem, IonLabel, IonSelect,
+	IonSelectOption, IonInput, IonButton
+  } from '@ionic/vue';
+  import { ref, onMounted } from 'vue';
+  
   const jwt = localStorage.getItem('jwtToken');
   const userId = localStorage.getItem('userId');
-
-  if (!jwt || !userId) {
-    alert('Usuario no autenticado');
-    return;
+  
+  const tipo = ref('');
+  const monto = ref('');
+  const fecha = ref('');
+  const descripcion = ref('');
+  const categoria = ref('');
+  const fromProductId = ref('');
+  const toProductId = ref('');
+  const productos = ref([]);
+  
+  onMounted(async () => {
+	if (!jwt || !userId) return;
+  
+	const res = await fetch('https://dev.genlabs.us/api/product', {
+	  headers: { Authorization: `Bearer ${jwt}` }
+	});
+  
+	const data = await res.json();
+	productos.value = data.filter(p => p.userId === userId && !p.hasError);
+  });
+  
+  function isTransferValid(fromType, toType) {
+	if (fromType === 'Saving' && toType === 'Loan') return true;
+	if (fromType === 'Cash' && toType === 'CreditCard') return true;
+	if (fromType === 'Cash' && toType === 'Saving') return true;
+	if (fromType === 'CreditCard' && toType === 'Loan') return true;
+	if (fromType === 'Saving' && toType === 'Cash') return true;
+	if (fromType === 'Saving' && toType === 'Investment') return true;
+	if (fromType === 'Saving' && toType === 'Saving') return true;
+	if (fromType === 'Cash' && toType === 'Loan') return true;
+	if (fromType === 'Cash' && toType === 'Investment') return true;
+	if (fromType === 'Saving' && toType === 'CreditCard') return true;
+	if (fromType === 'CreditCard' && !toType) return true;
+	if (fromType === 'Loan' && !toType) return true;
+	if (fromType === 'Cash' && !toType) return true;
+	if (fromType === 'Saving' && !toType) return true;
+	if (!fromType && toType === 'CreditCard') return true;
+	if (!fromType && toType === 'Loan') return true;
+	if (!fromType && toType === 'Investment') return true;
+	if (!fromType && toType === 'Saving') return true;
+	if (!fromType && toType === 'Cash') return true;
+	return false;
   }
-
-  const body = {
-    userId,
-    amount: parseFloat(monto.value),
-    categoryId: categoria.value,
-    transactionDate: fecha.value,
-    description: descripcion.value,
-    type: tipo.value, // 'Ingreso' o 'Gasto'
-    fromProductId: 'some-id-1',
-    toProductId: 'Prod1-1',
-    fromProduct: null,
-    toProduct: null,
-    hasError: false,
-    error: null
+  
+  const guardar = async () => {
+	if (!jwt || !userId) {
+	  alert('Usuario no autenticado');
+	  return;
+	}
+  
+	const from = productos.value.find(p => p.id === fromProductId.value);
+	const to = productos.value.find(p => p.id === toProductId.value);
+  
+	if (!from || !to) {
+	  alert('Selecciona productos válidos');
+	  return;
+	}
+  
+	if (!isTransferValid(from.productType, to.productType)) {
+	  alert(`Transferencia inválida entre ${from.productType} y ${to.productType}`);
+	  return;
+	}
+  
+	const body = {
+	  userId,
+	  amount: parseFloat(monto.value),
+	  categoryId: categoria.value,
+	  transactionDate: new Date(fecha.value).toISOString(),
+	  description: descripcion.value || 'Transacción registrada',
+	  type: tipo.value,
+	  fromProductId: from.id,
+	  toProductId: to.id,
+	  fromProduct: {
+		...from,
+		additionalData: {
+		  additionalProp1: '',
+		  additionalProp2: '',
+		  additionalProp3: ''
+		}
+	  },
+	  toProduct: {
+		...to,
+		additionalData: {
+		  additionalProp1: '',
+		  additionalProp2: '',
+		  additionalProp3: ''
+		}
+	  },
+	  hasError: false,
+	  error: null
+	};
+  
+	try {
+	  const res = await fetch('https://dev.genlabs.us/api/transfer/transfer', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		  Authorization: `Bearer ${jwt}`
+		},
+		body: JSON.stringify(body)
+	  });
+  
+	  const result = await res.json();
+  
+	  if (!res.ok || result.hasError) {
+		throw new Error(result.error || 'Error al registrar transacción');
+	  }
+  
+	  alert('Transacción registrada correctamente');
+	} catch (e) {
+	  alert('Error: ' + e.message);
+	}
   };
-
-  try {
-    const response = await fetch('https://dev.genlabs.us/api/transfer/transfer', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${jwt}`
-      },
-      body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log('Transacción registrada:', result);
-    alert('Transacción guardada con éxito');
-  } catch (error) {
-    console.error('Error al guardar:', error);
-    alert('Error al guardar: ' + error.message);
-  }
-};
-
   </script>
   
   <style scoped>

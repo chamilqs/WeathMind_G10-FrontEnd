@@ -1,112 +1,142 @@
 <template>
   <div class="transaction-list">
-    <!-- Filtros de tiempo -->
+    <!-- Filtros -->
     <div class="time-filter">
-      <span v-for="filter in filters" :key="filter" 
-        :class="{'active': selected === filter}" 
-        @click="selected = filter">
+      <span
+        v-for="filter in filters"
+        :key="filter"
+        :class="{ 'active': selected === filter }"
+        @click="selected = filter"
+      >
         {{ filter }}
       </span>
-      
-      
     </div>
 
-    <!-- Encabezado de Mes -->
-    <h3 class="month-title">{{ selectedMonth }}</h3>
+    <h3 class="month-title">{{ selected }}</h3>
 
-    <!-- Lista de Transacciones -->
-    <div class="transaction-card" v-for="(item, index) in filteredTransactions" :key="index">
+    <!-- Lista de transacciones -->
+    <div
+      v-if="filteredTransactions.length > 0"
+      v-for="(item, index) in filteredTransactions"
+      :key="index"
+      class="transaction-card"
+    >
       <div class="icon-wrapper">
-        <ion-icon :name="item.icon" class="transaction-icon"></ion-icon>
+        <ion-icon :name="getIcon(item)" class="transaction-icon"></ion-icon>
       </div>
       <div class="transaction-details">
-        <h4>{{ item.title }}</h4>
-        <p>{{ item.date }} - {{ item.time }}</p>
+        <h4>{{ item.description }}</h4>
+        <p>Sin fecha disponible</p>
       </div>
-      <div :class="item.type === 'expense' ? 'amount-negative' : 'amount-positive'">
-        {{ item.amount }}
+      <div :class="item.type === 'Gasto' ? 'amount-negative' : 'amount-positive'">
+        {{ formatAmount(item.amount, item.type) }}
       </div>
+    </div>
+
+    <!-- Imagen si no hay transacciones -->
+    <div v-else class="no-transactions">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
+        alt="No transacciones"
+        class="empty-img"
+      />
+      <p>No se encontraron transacciones en este período.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { IonButton, IonIcon } from '@ionic/vue';
+import { ref, computed, onMounted } from 'vue';
+import { IonIcon } from '@ionic/vue';
 
-const selected = ref('Month');
+const selected = ref('Year');
 const filters = ['24h', 'Week', 'Month', 'Year'];
-const selectedMonth = ref('October');
+const allTransactions = ref([]);
+const userId = localStorage.getItem('userId');
+const jwt = localStorage.getItem('jwtToken');
 
-const transactions = ref([
-  { title: 'Electricity Bill', date: '20 Oct 2024', time: '3:15 pm', amount: '-$250.00', type: 'expense', icon: 'flash-outline' },
-  { title: 'Freelance Payment', date: '21 Oct 2024', time: '1:00 pm', amount: '+$500.00', type: 'income', icon: 'briefcase-outline' },
-  { title: 'Grocery Shopping', date: '22 Oct 2024', time: '5:30 pm', amount: '-$120.00', type: 'expense', icon: 'cart-outline' },
-  { title: 'Gym Membership', date: '23 Oct 2024', time: '8:00 am', amount: '-$60.00', type: 'expense', icon: 'barbell-outline' }
-]);
+// Cargar transacciones
+onMounted(async () => {
+  if (!jwt || !userId) return;
 
-const filteredTransactions = computed(() => {
-  switch (selected.value) {
-    case '24h':
-      return transactions.value.slice(0, 1);
-    case 'Week':
-      return transactions.value.slice(0, 2);
-    case 'Month':
-      return transactions.value;
-    case 'Year':
-      return transactions.value;
-   
+  try {
+    const res = await fetch(`https://dev.genlabs.us/api/transaction?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        Accept: 'application/json',
+      },
+    });
+    const data = await res.json();
+    allTransactions.value = data;
+  } catch (e) {
+    console.error('Error al obtener transacciones', e);
   }
 });
 
-const toggleCalendar = () => {
-  console.log('Abrir calendario');
+// Iconos dinámicos por tipo
+const getIcon = (transaction) => {
+  const type = transaction.type?.toLowerCase() || '';
+  const desc = transaction.description?.toLowerCase() || '';
+
+  if (type.includes('gasto') || desc.includes('expense') || desc.includes('compra')) return 'card-outline';
+  if (type.includes('ingreso') || desc.includes('salary') || desc.includes('deposit')) return 'cash-outline';
+  if (desc.includes('transfer')) return 'swap-horizontal-outline';
+  if (desc.includes('investment') || desc.includes('shares')) return 'trending-up-outline';
+  if (desc.includes('loan') || desc.includes('prestamo')) return 'briefcase-outline';
+
+  return 'cash-outline'; // Default
 };
+
+// Formato de monto
+const formatAmount = (amount, type) => {
+  const symbol = type === 'Gasto' || type === 'Expense' ? '-' : '+';
+  return `${symbol}$${parseFloat(amount || 0).toFixed(2)}`;
+};
+
+// Mostrar todas las transacciones solo si el filtro es "Year"
+const filteredTransactions = computed(() => {
+  if (!allTransactions.value.length) return [];
+  return selected.value === 'Year' ? allTransactions.value : [];
+});
 </script>
 
 <style scoped>
 .transaction-list {
-  padding: 20px; /* Agrega espacio alrededor del contenedor */
+  padding: 20px;
   background-color: #f9fafb;
   border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
 }
 
 .time-filter {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px; /* Espacio entre los elementos */
-  padding: 0 10px; /* Añadir espacio a los lados */
-  flex-wrap: wrap; /* Permite que los elementos se ajusten */
-  overflow: hidden; /* Evita el desbordamiento */
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .time-filter span {
-  padding: 16px;
+  padding: 12px 20px;
   border-radius: 20px;
   cursor: pointer;
   background-color: #e0e7ff;
   color: #4338ca;
   font-weight: 500;
-  transition: background-color 0.3s ease;
-  flex-shrink: 0; /* Evita que los botones se encojan */
+  transition: 0.3s;
 }
 
 .time-filter .active {
   background-color: #4338ca;
-  color: #fff;
+  color: white;
 }
-
 
 .month-title {
   font-size: 20px;
   font-weight: bold;
   color: #1f2937;
   margin-bottom: 20px;
-  padding-left: 10px; /* Agrega espacio a la izquierda */
+  padding-left: 10px;
 }
 
 .transaction-card {
@@ -118,13 +148,6 @@ const toggleCalendar = () => {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
-  padding-left: 20px; /* Agrega espacio a la izquierda */
-  padding-right: 20px; /* Agrega espacio a la derecha */
-}
-
-.transaction-card:hover {
-  transform: translateY(-5px);
 }
 
 .icon-wrapper {
@@ -166,4 +189,17 @@ const toggleCalendar = () => {
   font-weight: bold;
 }
 
+.no-transactions {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+  color: #9ca3af;
+}
+
+.empty-img {
+  width: 120px;
+  height: auto;
+  margin: 0 auto 20px;
+  opacity: 0.8;
+}
 </style>

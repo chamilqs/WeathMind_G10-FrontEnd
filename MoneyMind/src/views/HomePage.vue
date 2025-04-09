@@ -307,7 +307,7 @@ onMounted(async () => {
     const token = localStorage.getItem('jwtToken');
     if (token) {
       try {
-        const res = await fetch('https://dev.genlabs.us/api/product', {
+        const res = await fetch(`https://dev.genlabs.us/api/product/by-user/${parsed.userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {

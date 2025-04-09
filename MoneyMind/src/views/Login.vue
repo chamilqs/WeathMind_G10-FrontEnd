@@ -175,7 +175,7 @@ const signUp = async () => {
     alert('Por favor, completa todos los campos.');
     return;
   }
-
+                                  
   if (password.value !== confirmPassword.value) {
     alert('Las contraseñas no coinciden.');
     return;

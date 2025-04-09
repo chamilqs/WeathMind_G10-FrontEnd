@@ -4,7 +4,7 @@
       <!-- Header con avatar, bienvenida y botón + -->
       <div class="header improved-header">
         <div class="welcome">
-          <img class="avatar" :src="userProfile.profilePicture || 'https://i.pravatar.cc/50'" alt="avatar" />
+            <img class="avatar" :src="userProfile.profilePicture || 'https://i.pravatar.cc/50'" alt="avatar"  @click="openMenu" style=" cursor: pointer" />
           <div>
             <p class="welcome-message">Welcome back 👋</p>
             <h2 class="user-name">{{ userProfile.fullName }}</h2>
@@ -174,14 +174,19 @@
 import { closeOutline } from 'ionicons/icons';
 
 import { ref, onMounted, computed } from 'vue';
+import { menuController } from '@ionic/vue';
 import {
   IonPage, IonButton, IonIcon, IonModal, IonList, IonItem,
-  IonLabel, IonInput, IonSelect, IonSelectOption, IonContent, IonToast
+  IonInput, IonSelect, IonSelectOption, IonContent, IonToast,
 } from '@ionic/vue';
 import { addOutline, bulbOutline } from 'ionicons/icons';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/vue';
+
+const openMenu = async () => {
+  await menuController.open(); // Asegura que el menú se abra
+};
 
 const showForm = ref(false);
 const showModal = ref(false);

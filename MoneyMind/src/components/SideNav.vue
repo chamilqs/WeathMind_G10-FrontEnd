@@ -86,7 +86,7 @@ import {
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import {
-  chevronBackOutline, personOutline, timeOutline, fingerPrintOutline,
+  personOutline, timeOutline, fingerPrintOutline,
   lockClosedOutline, lockOpenOutline, notificationsOutline, globeOutline,
   helpCircleOutline, logOutOutline, closeOutline
 } from 'ionicons/icons';

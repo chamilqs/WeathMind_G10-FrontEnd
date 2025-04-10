@@ -12,7 +12,7 @@
 	  <ion-content class="ion-padding">
 		<div class="form-container">
 		  <ion-list lines="none">
-  
+			<!-- Tipo -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Tipo</ion-label>
 			  <ion-select v-model="tipo" placeholder="Seleccionar tipo">
@@ -21,30 +21,39 @@
 			  </ion-select>
 			</ion-item>
   
+			<!-- Monto -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Monto</ion-label>
 			  <ion-input v-model="monto" type="number" placeholder="$0.00" />
 			</ion-item>
   
+			<!-- Fecha -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Fecha</ion-label>
 			  <ion-input v-model="fecha" type="date" />
 			</ion-item>
   
+			<!-- Descripción -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Descripción</ion-label>
 			  <ion-input v-model="descripcion" placeholder="Ej: Pago de factura" />
 			</ion-item>
   
-			<ion-item class="custom-item">
+			<!-- Categoría -->
+			<ion-item class="custom-item" v-if="tipo">
 			  <ion-label position="stacked">Categoría</ion-label>
 			  <ion-select v-model="categoria" placeholder="Seleccionar categoría">
-				<ion-select-option value="comida">Comida</ion-select-option>
-				<ion-select-option value="transporte">Transporte</ion-select-option>
-				<ion-select-option value="salud">Salud</ion-select-option>
+				<ion-select-option
+				  v-for="cat in categoriasDisponibles"
+				  :key="cat.id"
+				  :value="cat.id"
+				>
+				  {{ cat.name }}
+				</ion-select-option>
 			  </ion-select>
 			</ion-item>
   
+			<!-- Producto origen -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Producto origen</ion-label>
 			  <ion-select v-model="fromProductId" placeholder="Selecciona producto">
@@ -54,6 +63,7 @@
 			  </ion-select>
 			</ion-item>
   
+			<!-- Producto destino -->
 			<ion-item class="custom-item">
 			  <ion-label position="stacked">Producto destino</ion-label>
 			  <ion-select v-model="toProductId" placeholder="Selecciona producto">
@@ -63,10 +73,20 @@
 			  </ion-select>
 			</ion-item>
   
+			<!-- Si no hay productos -->
+			<ion-item v-if="productos.length === 0">
+			  <ion-label color="danger">No se encontraron productos vinculados</ion-label>
+			</ion-item>
 		  </ion-list>
   
+		  <!-- Botón Guardar -->
 		  <ion-button expand="full" color="primary" class="save-button" @click="guardar">
 			Guardar
+		  </ion-button>
+  
+		  <!-- Botón para registrar categorías -->
+		  <ion-button expand="full" color="medium" @click="registrarCategoriasPredefinidas">
+			Registrar categorías por defecto
 		  </ion-button>
 		</div>
 	  </ion-content>
@@ -79,7 +99,7 @@
 	IonTitle, IonContent, IonList, IonItem, IonLabel, IonSelect,
 	IonSelectOption, IonInput, IonButton
   } from '@ionic/vue';
-  import { ref, onMounted } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   
   const jwt = localStorage.getItem('jwtToken');
   const userId = localStorage.getItem('userId');
@@ -93,17 +113,62 @@
   const toProductId = ref('');
   const productos = ref([]);
   
+  // Categorías predefinidas
+  const categoriasIngreso = [
+	{ id: 'salary', name: 'Salary' },
+	{ id: 'freelance', name: 'Freelance' },
+	{ id: 'investments', name: 'Investments' },
+	{ id: 'rental', name: 'Rental Income' },
+	{ id: 'gifts', name: 'Gifts' },
+	{ id: 'other_income', name: 'Other' }
+  ];
+  
+  const categoriasGasto = [
+	{ id: 'housing', name: 'Housing' },
+	{ id: 'food', name: 'Food & Groceries' },
+	{ id: 'transportation', name: 'Transportation' },
+	{ id: 'debt', name: 'Debt & Loans' },
+	{ id: 'shopping', name: 'Shopping' },
+	{ id: 'health', name: 'Health' },
+	{ id: 'education', name: 'Education' },
+	{ id: 'entertainment', name: 'Entertainment' },
+	{ id: 'travel', name: 'Travel' },
+	{ id: 'pets', name: 'Pets' },
+	{ id: 'other_expense', name: 'Other' }
+  ];
+  
+  const categoriasDisponibles = computed(() =>
+	tipo.value === 'Ingreso' ? categoriasIngreso : tipo.value === 'Gasto' ? categoriasGasto : []
+  );
+  
+  // Cargar productos
   onMounted(async () => {
-	if (!jwt || !userId) return;
+	if (!jwt || !userId) {
+	  alert('Token o ID de usuario faltante');
+	  return;
+	}
   
-	const res = await fetch('https://dev.genlabs.us/api/product', {
-	  headers: { Authorization: `Bearer ${jwt}` }
-	});
+	try {
+	  const res = await fetch(`https://dev.genlabs.us/api/product/by-user/${userId}`, {
+		headers: {
+		  Authorization: `Bearer ${jwt}`,
+		  Accept: 'application/json'
+		}
+	  });
   
-	const data = await res.json();
-	productos.value = data.filter(p => p.userId === userId && !p.hasError);
+	  const data = await res.json();
+	  if (!res.ok || data.hasError) {
+		alert('No se pudieron obtener los productos');
+		return;
+	  }
+  
+	  productos.value = data;
+	} catch (e) {
+	  alert('Error de conexión: ' + e.message);
+	}
   });
   
+  // Validación de tipos válidos
   function isTransferValid(fromType, toType) {
 	if (fromType === 'Saving' && toType === 'Loan') return true;
 	if (fromType === 'Cash' && toType === 'CreditCard') return true;
@@ -127,6 +192,7 @@
 	return false;
   }
   
+  // Guardar transacción
   const guardar = async () => {
 	if (!jwt || !userId) {
 	  alert('Usuario no autenticado');
@@ -186,7 +252,6 @@
 	  });
   
 	  const result = await res.json();
-  
 	  if (!res.ok || result.hasError) {
 		throw new Error(result.error || 'Error al registrar transacción');
 	  }
@@ -195,6 +260,44 @@
 	} catch (e) {
 	  alert('Error: ' + e.message);
 	}
+  };
+  
+  // Registrar categorías predefinidas
+  const registrarCategoriasPredefinidas = async () => {
+	if (!jwt || !userId) {
+	  alert('No se puede registrar categorías: usuario no autenticado');
+	  return;
+	}
+  
+	const categorias = [...categoriasIngreso.map(c => ({ ...c, type: 'Ingreso' })), ...categoriasGasto.map(c => ({ ...c, type: 'Gasto' }))];
+  
+	for (const cat of categorias) {
+	  const url = new URL('https://dev.genlabs.us/api/category/add');
+	  url.searchParams.append('id', cat.id);
+	  url.searchParams.append('name', cat.name);
+	  url.searchParams.append('type', cat.type);
+	  url.searchParams.append('userId', userId);
+  
+	  try {
+		const res = await fetch(url, {
+		  method: 'POST',
+		  headers: {
+			Authorization: `Bearer ${jwt}`
+		  }
+		});
+  
+		if (!res.ok) {
+		  const err = await res.text();
+		  console.warn(`❌ Categoría ${cat.name} no se pudo registrar.`, err);
+		} else {
+		  console.log(`✅ Categoría ${cat.name} registrada correctamente`);
+		}
+	  } catch (error) {
+		console.error(`Error en ${cat.name}:`, error.message);
+	  }
+	}
+  
+	alert('✔️ Categorías predefinidas registradas.');
   };
   </script>
   

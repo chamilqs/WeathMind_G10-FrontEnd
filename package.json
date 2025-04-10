@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "jwt-decode": "^4.0.0"
+    "jwt-decode": "^4.0.0",
+    "vue3-lottie": "^3.3.1"
   }
 }

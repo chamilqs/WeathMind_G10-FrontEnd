@@ -47,15 +47,15 @@
         </Swiper>
       </div>
 
-      <!-- Últimos movimientos al final en forma de card -->
+      <!-- Últimos movimientos -->
       <div class="movements">
         <h4>Últimos Movimientos</h4>
         <div class="movement-scroll">
-          <div class="movement-item" v-for="(item, index) in dummyMovements.slice(0, 3)" :key="index">
-            <ion-icon :icon="bulbOutline" class="icon" />
+          <div class="movement-item" v-for="(item, index) in transactions.slice(0, 5)" :key="index">
+            <ion-icon :icon="getIcon(item)" class="icon" />
             <div class="movement-info">
               <h5>{{ item.description }}</h5>
-              <p>{{ new Date().toLocaleString() }}</p>
+              <p>{{ formatDate(item.trxDate) }}</p>
             </div>
             <span :class="{ positive: item.amount > 0, negative: item.amount < 0 }">
               {{ item.amount > 0 ? '+' : '' }}${{ Math.abs(item.amount) }}
@@ -63,10 +63,11 @@
           </div>
         </div>
         <div class="see-more-wrapper">
-          <p class="see-more" @click="showModal = true">See more &gt;&gt;</p>
+          <p class="see-more" @click="goToMyCards">See more &gt;&gt;</p>
         </div>
       </div>
 
+      
       <!-- Modal Formulario -->
       <ion-modal :is-open="showForm" @didDismiss="showForm = false">
   <ion-content class="ion-padding">
@@ -171,18 +172,18 @@
 </template>
 
 <script setup>
-import { closeOutline } from 'ionicons/icons';
-
+import { useRouter } from 'vue-router';
+import { closeOutline, addOutline, cashOutline, arrowDownOutline, arrowUpOutline, swapHorizontalOutline, cardOutline } from 'ionicons/icons';
 import { ref, onMounted, computed } from 'vue';
 import {
   IonPage, IonButton, IonIcon, IonModal, IonList, IonItem,
   IonLabel, IonInput, IonSelect, IonSelectOption, IonContent, IonToast
 } from '@ionic/vue';
-import { addOutline, bulbOutline } from 'ionicons/icons';
+import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Swiper, SwiperSlide } from 'swiper/vue';
 
+const router = useRouter();
 const showForm = ref(false);
 const showModal = ref(false);
 const toastVisible = ref(false);
@@ -190,6 +191,7 @@ const toastMessage = ref('');
 const userProfile = ref({ fullName: 'Usuario', profilePicture: '' });
 const currentUserId = ref('');
 const products = ref([]);
+const transactions = ref([]);
 
 const newProduct = ref({
   name: '',
@@ -202,98 +204,36 @@ const filteredProducts = computed(() =>
   products.value.filter(p => p && typeof p.balance === 'number' && p.userId === currentUserId.value)
 );
 
-const dummyMovements = ref([
-  { description: 'Pago Tarjeta BHD', amount: -2500 },
-  { description: 'Depósito Nómina', amount: 12500 },
-  { description: 'Transferencia a Ahorros', amount: -1500 },
-  { description: 'Pago Préstamo UASD', amount: -3000 },
-  { description: 'Ingreso Freelance', amount: 8000 },
-]);
-
 const totalBalance = computed(() =>
   filteredProducts.value.reduce((acc, item) => acc + (item.balance || 0), 0)
 );
 
-const generatePayload = () => {
-  const extra = newProduct.value.extra || {};
-  const now = new Date().toISOString();
-
-  const base = {
-    id: "string",
-    userId: currentUserId.value,
-    name: newProduct.value.name ?? '',
-    balance: newProduct.value.balance ?? 0,
-    productType: newProduct.value.productType ?? '',
-    creditLimit: 0,
-    debt: 0,
-    termInMonths: 0,
-    interestRate: 0,
-    endDate: now,
-    hasError: false,
-    error: 'string'
-  };
-
-  switch (newProduct.value.productType) {
-    case 'CreditCard':
-      return {
-        ...base,
-        creditLimit: Number(extra.creditLimit || 0),
-        debt: Number(extra.debt || 0),
-        endDate: extra.expirationDate || now
-      };
-    case 'Loan':
-      return {
-        ...base,
-        creditLimit: 0,
-        debt: Number(extra.debt || 0),
-        termInMonths: Number(extra.termInMonths || 0),
-        interestRate: Number(extra.interestRate || 0),
-        endDate: extra.endDate || now
-      };
-    case 'Investment':
-      return {
-        ...base,
-        termInMonths: Number(extra.termInMonths || 0),
-        interestRate: Number(extra.interestRate || 0),
-        endDate: now
-      };
-    case 'Saving':
-    case 'Cash':
-    default:
-      return base;
-  }
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleString('es-DO', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 };
 
-const registrarProducto = async () => {
-  const token = localStorage.getItem('jwtToken');
-  if (!token) return;
+const getIcon = (transaction) => {
+  const type = transaction.type?.toLowerCase() || '';
+  const desc = transaction.description?.toLowerCase() || '';
 
-  const payload = generatePayload();
+  if (type.includes('gasto') || desc.includes('compra')) return cardOutline;
+  if (type.includes('ingreso') || desc.includes('salary') || desc.includes('deposit')) return cashOutline;
+  if (desc.includes('transfer')) return swapHorizontalOutline;
+  if (desc.includes('loan') || desc.includes('prestamo')) return arrowDownOutline;
+  if (desc.includes('investment') || desc.includes('shares')) return arrowUpOutline;
 
-  try {
-    const response = await fetch('https://dev.genlabs.us/api/product', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: '*/*',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+  return cashOutline;
+};
 
-    const data = await response.json();
-    if (!response.ok || data.hasError) {
-      toastMessage.value = data.error || 'Error desconocido';
-    } else {
-      products.value.push(data);
-      showForm.value = false;
-      toastMessage.value = 'Producto guardado correctamente';
-    }
-  } catch (err) {
-    toastMessage.value = 'Error: ' + err.message;
-  } finally {
-    toastVisible.value = true;
-  }
+const goToMyCards = () => {
+  router.push('/tabs/mycards');
 };
 
 onMounted(async () => {
@@ -314,13 +254,24 @@ onMounted(async () => {
           const data = await res.json();
           products.value = data;
         }
+
+        const res2 = await fetch(`https://dev.genlabs.us/api/transaction?userId=${parsed.userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res2.ok) {
+          const data = await res2.json();
+          transactions.value = data
+            .filter(tx => tx.trxDate && tx.trxDate !== "0001-01-01T00:00:00")
+            .sort((a, b) => new Date(b.trxDate) - new Date(a.trxDate));
+        }
       } catch (e) {
-        console.error('Error al obtener productos', e);
+        console.error('Error al obtener datos', e);
       }
     }
   }
 });
 </script>
+
 
 <style scoped>
 .home-page {
@@ -336,7 +287,6 @@ onMounted(async () => {
   border-bottom: 1px solid #ddd;
 }
 
-
 .btn-p {
   font-size: 18px;
   color: white;
@@ -350,7 +300,6 @@ onMounted(async () => {
   gap: 10px;
 }
 
-
 .welcome-message {
   margin-top: 10%;
   font-size: 14px;
@@ -359,36 +308,33 @@ onMounted(async () => {
   position: absolute;
 }
 
-
-
 .balance-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Alineación a la izquierda */
+  align-items: flex-start;
   justify-content: center;
-  gap: 8px; /* Espacio entre elementos */
+  gap: 8px;
   margin-top: 20px;
   padding: 20px;
   width: 100%;
-  height: auto; /* Altura dinámica */
+  height: auto;
 }
 
 .balance-label {
   font-size: 14px;
   color: #9CA4AB;
   margin: 0;
-  position: static; /* Elimina el absolute para seguir el flujo del layout */
+  position: static;
 }
 
 .balance-amount {
-  font-size: 32px;
+  font-size: 24px;
   color: #1d4ed8;
   font-weight: 700;
   margin: 0;
-  position: static; /* Igual aquí */
-  text-align: left; /* Alineación a la izquierda */
+  position: static;
+  text-align: left;
 }
-
 
 .avatar {
   width: 50px;
@@ -445,7 +391,6 @@ onMounted(async () => {
 
 .movements {
   margin-top: 15%;
-    
 }
 
 .movements p {
@@ -455,7 +400,7 @@ onMounted(async () => {
 .movements h4 {
   margin-bottom: 15px;
   font-size: 16px;
-    color: #042A72;
+  color: #042A72;
   font-weight: 600;
   text-align: center;   
 }
@@ -540,7 +485,7 @@ onMounted(async () => {
 }
 
 .linked-product-card {
-  background: #0a3d91;
+  background: linear-gradient(145deg, #2060d6, #003087);
   border-radius: 20px;
   color: white;
   padding: 1.5rem;
@@ -549,14 +494,28 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.linked-product-card::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  top: -20px;
+  right: -20px;
 }
 
 .card-label {
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 4px;
+  color: white;
 }
 
 .card-info {
@@ -566,20 +525,21 @@ onMounted(async () => {
 
 .card-sub {
   font-size: 13px;
-  color: #ddd;
+  color: #cbd5e1;
   margin-bottom: 0.2rem;
-
 }
 
 .card-balance {
   font-size: 24px;
   font-weight: bold;
   margin: 0;
+  color: white;
 }
 
 .card-type {
   font-size: 14px;
   opacity: 0.9;
+  color: white;
 }
 
 .form-container {
@@ -627,5 +587,4 @@ onMounted(async () => {
   color: #1a1a1a;
   font-size: 20px;
 }
-
 </style>

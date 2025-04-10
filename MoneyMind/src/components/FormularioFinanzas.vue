@@ -67,35 +67,74 @@ import {
 } from '@ionic/vue';
 import { ref } from 'vue';
 
+// Referencias reactivas
 const amount = ref('');
 const date = ref('');
 const category = ref('');
 const accountType = ref('');
 
+// Función para decodificar JWT
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+}
+
 const guardarTransaccion = async () => {
   const token = localStorage.getItem('jwtToken');
+  const decoded = parseJwt(token);
 
-  const body = {
-    fromProductId: '1',
-    toProductId: '2',
-    toProduct: {
-      id: '2',
-      userId: '1',
+  if (!decoded || !decoded.userId) {
+    alert('No se pudo obtener el ID del usuario');
+    return;
+  }
+
+  const userId = decoded.userId;
+
+  const trx = {
+    userId: userId,
+    amount: Number(amount.value),
+    categoryId: category.value,
+    transactionDate: new Date(date.value).toISOString(),
+    description: "Compre algo en la tienda",
+    type: "Expense",
+    fromProductId: "Prod1-1",
+    toProductId: "Prod1-2",
+    fromProduct: {
+      id: "string",
+      userId: userId,
       name: category.value,
       balance: Number(amount.value),
       productType: accountType.value,
       additionalData: {
-        additionalProp1: '',
-        additionalProp2: '',
-        additionalProp3: ''
+        additionalProp1: "string",
+        additionalProp2: "string",
+        additionalProp3: "string"
       },
-      hasError: false,
-      error: ''
+      hasError: true,
+      error: "string"
     },
-    hasError: false,
-    error: ''
+    toProduct: {
+      id: "string",
+      userId: userId,
+      name: category.value,
+      balance: Number(amount.value),
+      productType: accountType.value,
+      additionalData: {
+        additionalProp1: "string",
+        additionalProp2: "string",
+        additionalProp3: "string"
+      },
+      hasError: true,
+      error: "string"
+    },
+    hasError: true,
+    error: "string"
   };
 
+  
   try {
     const res = await fetch('https://dev.genlabs.us/api/transfer/transfer', {
       method: 'POST',
@@ -103,20 +142,23 @@ const guardarTransaccion = async () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ trx }) // 👈🏼 ENVÍO CORRECTO
     });
 
     const data = await res.json();
+
     if (res.ok) {
       alert('Transacción registrada correctamente');
     } else {
-      alert('Error al registrar transacción: ' + data.error);
+      alert('Error al registrar transacción: ' + (data.error || 'Desconocido'));
     }
   } catch (err) {
     alert('Error de red: ' + err.message);
   }
 };
+
 </script>
+
 
 <style scoped>
 .form-container {

@@ -15,7 +15,7 @@
   import 'swiper/swiper-bundle.css';
   
   // Definir las props que recibirá el componente
-  const props = defineProps({
+  defineProps({
     cuentas: {
       type: Array,
       required: true,

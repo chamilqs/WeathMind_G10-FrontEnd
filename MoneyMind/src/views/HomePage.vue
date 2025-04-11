@@ -184,16 +184,14 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-<<<<<<< HEAD
 const openMenu = async () => {
   await menuController.open(); // Asegura que el menú se abra
 };
 
-=======
+
 const router = useRouter();
->>>>>>> 9c4d34666ae81eb62702c86f1f7079f5f75ad966
 const showForm = ref(false);
-const showModal = ref(false);
+// Removed unused showModal variable
 const toastVisible = ref(false);
 const toastMessage = ref('');
 const userProfile = ref({ fullName: 'Usuario', profilePicture: '' });

@@ -276,6 +276,64 @@ onMounted(async () => {
     }
   }
 });
+
+const registrarProducto = async () => {
+  const token = localStorage.getItem('jwtToken');
+  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+  if (!token || !userData?.userId) {
+    toastMessage.value = 'No se encontró sesión activa.';
+    toastVisible.value = true;
+    return;
+  }
+
+  const payload = {
+    id: "string", // requerido por la API
+    name: newProduct.value.name,
+    balance: newProduct.value.balance,
+    productType: newProduct.value.productType,
+    userId: userData.userId,
+    creditLimit: newProduct.value.extra.creditLimit || 0,
+    debt: newProduct.value.extra.debt || 0,
+    termInMonths: newProduct.value.extra.termInMonths || 0,
+    interestRate: newProduct.value.extra.interestRate || 0,
+    endDate: newProduct.value.extra.endDate || null,
+  };
+
+  try {
+    const res = await fetch('https://dev.genlabs.us/api/product', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Accept: '*/*'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || result.hasError) {
+      toastMessage.value = 'Error al guardar: ' + (result.error || 'Verifica los campos.');
+      toastVisible.value = true;
+      return;
+    }
+
+    // Producto creado, actualizar lista
+    products.value.push(result);
+    toastMessage.value = 'Producto registrado con éxito.';
+    toastVisible.value = true;
+    showForm.value = false;
+
+    // Reset del formulario
+    newProduct.value = { name: '', balance: 0, productType: '', extra: {} };
+  } catch (error) {
+    console.error('Error:', error);
+    toastMessage.value = 'Error inesperado.';
+    toastVisible.value = true;
+  }
+};
+
 </script>
 
 

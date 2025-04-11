@@ -200,22 +200,24 @@ const signUp = async () => {
 
   const defaultProfilePicture = 'https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg';
 
-  const queryParams = new URLSearchParams({
+  const payload = {
     firstName,
     lastName,
     email: email.value,
     userName,
     profilePicture: defaultProfilePicture,
     password: password.value,
-    confirmPassword: confirmPassword.value,
-  });
-
-  const url = `https://dev.genlabs.us/api/account/register?${queryParams.toString()}`;
+    confirmPassword: confirmPassword.value
+  };
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch('https://dev.genlabs.us/api/account/register', {
       method: 'POST',
-      headers: { Accept: '*/*' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
@@ -232,6 +234,7 @@ const signUp = async () => {
   }
 };
 </script>
+
 
 
 <style>

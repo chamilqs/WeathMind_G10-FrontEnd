@@ -21,9 +21,15 @@
               <!-- Email -->
               <ion-item>
                 <div class="label-container">
-                  <ion-label position="floating"></ion-label>
+                  <ion-label position="floating">Email</ion-label>
                 </div>
-                <ion-input v-model="email" type="email" required placeholder="Enter your email"></ion-input>
+                <ion-input
+                  v-model.trim="email"
+                  type="email"
+                  required
+                  placeholder="Enter your email"
+                  @ionInput="email = $event.target.value"
+                ></ion-input>
               </ion-item>
 
               <p v-if="errorMessage" class="text-danger text-center">{{ errorMessage }}</p>
@@ -63,21 +69,35 @@ const showAlert = async (header, message) => {
 }
 
 const sendResetLink = async () => {
-  if (!email.value.trim()) {
+  const trimmedEmail = email.value ? email.value.trim() : ''
+  console.log('Email value:', email.value)
+  console.log('Trimmed email value:', trimmedEmail)
+  
+  if (!trimmedEmail) {
     return showAlert('Missing Email', 'Please enter your email address.')
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(email.value)) {
+  if (!emailRegex.test(trimmedEmail)) {
     return showAlert('Invalid Email', 'Please enter a valid email address.')
   }
- // Simula el envío (reemplaza por API real si deseas)
+
   try {
-    console.log(`Sending password reset link to: ${email.value}`)
-    await showAlert('Reset Link Sent', 'Please check your email for the password reset instructions.')
+    const response = await fetch('https://dev.genlabs.us/api/account/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: trimmedEmail })
+    })
+
+    if (!response.ok) {
+      const data = await response.json()
+      throw new Error(data.message || 'Error sending reset link')
+    }
+
+    await showAlert('Link Sent', 'Please check your email for password reset instructions.')
     router.push('/login')
   } catch (error) {
-    await showAlert('Error', 'Failed to send reset link. Try again later.')
+    await showAlert('Error', error.message || 'Error sending reset link. Please try again later.')
   }
 }
 </script>

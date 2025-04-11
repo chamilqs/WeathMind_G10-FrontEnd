@@ -19,6 +19,7 @@ import ForgotPassword from '../views/ForgotPassword.vue';
 import NotificationsPage from '../views/NotificationsPage.vue';
 import HelpSupport from '../views/HelpSupport.vue';
 import ConfirmEmail from '../views/ConfirmEmail.vue';
+import ResetPassword from '../views/ResetPassword.vue';
 
 const routes = [
   {
@@ -60,6 +61,10 @@ const routes = [
   {
     path: '/forgot-password',
     component: ForgotPassword
+  },
+  {
+    path: '/reset-password',
+    component: ResetPassword
   },
   {
     path: '/notifications',

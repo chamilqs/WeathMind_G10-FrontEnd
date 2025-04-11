@@ -26,7 +26,8 @@
           <div class="input-group">
             <label class="input-label">Password</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password" required />
+              <ion-input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password"
+                required />
               <ion-icon :icon="showPassword ? eyeOff : eye" slot="end" @click="togglePassword" class="eye-icon" />
             </ion-item>
             <p v-if="!isLogin" class="password-hint">
@@ -37,14 +38,16 @@
           <div v-if="!isLogin" class="input-group">
             <label class="input-label">Confirm Password</label>
             <ion-item class="input-field" lines="none">
-              <ion-input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="Confirm your password" required />
+              <ion-input v-model="confirmPassword" :type="showPassword ? 'text' : 'password'"
+                placeholder="Confirm your password" required />
             </ion-item>
           </div>
         </ion-list>
 
         <div v-if="isLogin" class="d-flex justify-content-between align-items-center mb-3">
           <div class="form-check">
-            <input type="checkbox" class="form-check-input" v-model="rememberMe"/> <label class="form-check-label">Remember Me</label>
+            <input type="checkbox" class="form-check-input" v-model="rememberMe" /> <label
+              class="form-check-label">Remember Me</label>
           </div>
           <router-link to="/forgot-password" class="text-decoration-none">Forgot Password?</router-link>
         </div>
@@ -128,13 +131,18 @@ const login = async () => {
   }
 
   try {
-    const credential = encodeURIComponent(email.value);
-    const encodedPassword = encodeURIComponent(password.value);
-    const url = `https://dev.genlabs.us/api/account/authenticate?credential=${credential}&password=${encodedPassword}`;
+    const payload = {
+      credential: email.value,
+      password: password.value
+    };
 
-    const response = await fetch(url, {
+    const response = await fetch('https://dev.genlabs.us/api/account/authenticate', {
       method: 'POST',
-      headers: { Accept: '*/*' }
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
@@ -175,7 +183,7 @@ const signUp = async () => {
     alert('Por favor, completa todos los campos.');
     return;
   }
-                                  
+
   if (password.value !== confirmPassword.value) {
     alert('Las contraseñas no coinciden.');
     return;
@@ -225,19 +233,26 @@ const signUp = async () => {
 };
 </script>
 
- 
+
 <style>
 :root {
-  --background-color: #f8f9fa; /* Fondo general claro */
-  --form-bg: #ffffff; /* Fondo del formulario */
-  --text-color: #212529; /* Negro suave */
-  --input-bg: #f1f3f4; /* Fondo de los inputs */
-  --input-border: #ced4da; /* Borde gris claro */
-  --button-bg: #033974; /* Azul botón */
-  --button-hover: #0056b3; /* Azul más oscuro */
+  --background-color: #f8f9fa;
+  /* Fondo general claro */
+  --form-bg: #ffffff;
+  /* Fondo del formulario */
+  --text-color: #212529;
+  /* Negro suave */
+  --input-bg: #f1f3f4;
+  /* Fondo de los inputs */
+  --input-border: #ced4da;
+  /* Borde gris claro */
+  --button-bg: #033974;
+  /* Azul botón */
+  --button-hover: #0056b3;
+  /* Azul más oscuro */
   --shadow-light: rgba(0, 0, 0, 0.1);
 }
- 
+
 /* Estilos generales */
 body {
   background-color: var(--background-color);
@@ -245,7 +260,7 @@ body {
   font-family: 'Arial', sans-serif;
   transition: background-color 0.3s ease-in-out;
 }
- 
+
 /* Contenedor del formulario */
 .form-container {
   max-width: 400px;
@@ -256,7 +271,7 @@ body {
   box-shadow: 0 4px 10px var(--shadow-light);
   transition: box-shadow 0.3s ease-in-out;
 }
- 
+
 .centered {
   position: absolute;
   top: 50%;
@@ -265,13 +280,15 @@ body {
   width: 90%;
   max-width: 400px;
 }
- .input-gruop{
-    display: flex;
-    flex-direction: column;
-    align-items:start;
-    justify-content: start;
-    margin-bottom: 20px;
- }
+
+.input-gruop {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  margin-bottom: 20px;
+}
+
 /* Texto */
 .text-center {
   text-align: center;
@@ -279,7 +296,7 @@ body {
   font-size: large;
   font-weight: bold;
 }
- 
+
 /* Labels */
 label {
   display: block;
@@ -287,7 +304,7 @@ label {
   margin-bottom: 6px;
   color: var(--text-color);
 }
- 
+
 /* Inputs */
 .input-field {
   width: 100%;
@@ -301,12 +318,12 @@ label {
   transition: all 0.3s ease-in-out;
   box-shadow: 0px 2px 4px var(--shadow-light);
 }
- 
+
 .input-field:focus {
   border-bottom: 2px solid var(--button-bg);
   box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.2);
 }
- 
+
 /* Botón */
 .form-btn {
   width: 100%;
@@ -317,17 +334,17 @@ label {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
- 
+
 .form-btn:hover {
   background-color: var(--button-hover);
   transform: scale(1.02);
 }
- 
+
 .form-btn:focus {
   outline: none;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
- 
+
 /* Enlaces */
 .toggle-link {
   color: var(--button-bg);
@@ -335,12 +352,12 @@ label {
   font-weight: bold;
   transition: color 0.3s ease-in-out;
 }
- 
+
 .toggle-link:hover {
   text-decoration: underline;
   color: var(--button-hover);
 }
- 
+
 
 .dark-mode {
   --background-color: #121212;
@@ -372,7 +389,8 @@ label {
 }
 
 .dark-mode input::placeholder {
-  color: #aaa !important; /* Hace el placeholder más visible */
+  color: #aaa !important;
+  /* Hace el placeholder más visible */
 }
 
 .dark-mode input:focus {
@@ -383,13 +401,17 @@ label {
 }
 
 .dark-mode ion-input {
-  --background: #2c2c2c !important; /* Fondo oscuro */
-  --color: #ffffff !important; /* Texto blanco */
+  --background: #2c2c2c !important;
+  /* Fondo oscuro */
+  --color: #ffffff !important;
+  /* Texto blanco */
 }
 
 .dark-mode ion-item {
-  --background: transparent !important; /* Fondo transparente */
-  --border-color: #444 !important; /* Borde visible */
+  --background: transparent !important;
+  /* Fondo transparente */
+  --border-color: #444 !important;
+  /* Borde visible */
 }
 
 
@@ -410,5 +432,4 @@ label {
     --shadow-light: rgba(255, 255, 255, 0.1);
   }
 }
- 
 </style>

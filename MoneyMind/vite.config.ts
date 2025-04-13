@@ -5,8 +5,8 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import { defineConfig } from 'vite'
 
-// https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // <- necesario para rutas relativas en Vercel
   plugins: [
     vue(),
     legacy()
@@ -15,6 +15,9 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+  build: {
+    outDir: 'dist' // <- Vercel buscará este directorio
   },
   test: {
     globals: true,

@@ -1,0 +1,65 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "fullName": "Test User",
+      "email": "test@example.com",
+      "password": "Test@123"
+    },
+    {
+      "id": "866f",
+      "fullName": "Pepe mogica",
+      "email": "Ronald@gmail.com",
+      "password": "123456789"
+    }
+  ],
+  "cuentas": [
+    {
+      "id": "1cde",
+      "nombreCompleto": "Pablo",
+      "tipoCuenta": "ahorros",
+      "saldoInicial": "100"
+    },
+    {
+      "id": "f069",
+      "nombreCompleto": "Pepe",
+      "tipoCuenta": "corriente",
+      "saldoInicial": "500"
+    },
+    {
+      "id": "c55a",
+      "nombreCompleto": "Jose",
+      "tipoCuenta": "ahorros",
+      "saldoInicial": "50000"
+    }
+  ],
+  "tarjetas": [
+    {
+      "id": "c554",
+      "userId": "1",
+      "cardNumber": "4578494512324562",
+      "holderName": "Pepito Escobar",
+      "expirationDate": "02/27",
+      "balance": "500",
+      "logo": "/src/assets/icons/mastercard.png"
+    },
+    {
+      "id": "c163",
+      "userId": "1",
+      "cardNumber": "5045",
+      "holderName": "Joselito",
+      "expirationDate": "05/30",
+      "balance": "7800",
+      "logo": "/src/assets/icons/mastercard.png"
+    },
+    {
+      "id": "c155",
+      "userId": "1",
+      "cardNumber": "7894",
+      "holderName": "Pedro",
+      "expirationDate": "03/50",
+      "balance": "1500",
+      "type": "MasterCard"
+    }
+  ]
+}

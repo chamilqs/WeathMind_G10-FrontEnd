@@ -1,0 +1,7 @@
+{
+  "name": "MoneyMind",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
